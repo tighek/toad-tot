@@ -124,13 +124,39 @@ try:
 	while True:
 
 		if GPIO.input(door1) == False:
-			if 1 in candy:
-				fire_tube1()
-			if 1 in water:
-				fire_tube2()
-			else:
-				flash_led()
-				randomize_tubes()
+#			if 1 in candy:
+#				fire_tube1()
+#			elif 1 in water:
+#				fire_tube2()
+#		elif GPIO.input(door2) == False:
+#			if 2 in candy:
+#				fire_tube3()
+#			elif 2 in water:
+#				fire_tube2()
+
+
+#			else:
+#				flash_led()
+#				randomize_tubes()
+
+
+#	while True:
+#
+#		if GPIO.input(door1) == False:
+#			if 1 in candy:
+#				fire_tube1()
+#			elif 1 in water:
+#				fire_tube2()
+#		elif GPIO.input(door2) == False:
+#			if 2 in candy:
+#				fire_tube3()
+#			elif 2 in water:
+#				fire_tube2()
+
+
+#			else:
+#				flash_led()
+#				randomize_tubes()
 
 
 
