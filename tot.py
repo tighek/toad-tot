@@ -28,48 +28,48 @@ import time
 import random
 import sys
 
-#def setup_channels():
-#	GPIO.setmode(GPIO.BOARD)
-#	GPIO.setwarnings(False)
-#	GPIO.setup(door1, GPIO.IN)
-#	GPIO.setup(door2, GPIO.IN)
-#	GPIO.setup(door3, GPIO.IN)
-#	GPIO.setup(door4, GPIO.IN)
-#	GPIO.setup(door5, GPIO.IN)
-#	GPIO.setup(tube1, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)
-#	# GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
-#	# GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
-#	return
+def setup_channels():
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setwarnings(False)
+	GPIO.setup(door1, GPIO.IN)
+	GPIO.setup(door2, GPIO.IN)
+	GPIO.setup(door3, GPIO.IN)
+	GPIO.setup(door4, GPIO.IN)
+	GPIO.setup(door5, GPIO.IN)
+	GPIO.setup(tube1, GPIO.OUT, initial=GPIO.HIGH)
+	GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
+	GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
+	GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)
+	# GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
+	# GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
+	return
 
-#def flash_led():
-#	flash = 0
-#	while flash < 2:
-#		GPIO.output(led, 1)
-#		time.sleep(1)
-#		GPIO.output(led, 0)
-#		flash += 1
-#	return
+def flash_led():
+	flash = 0
+	while flash < 2:
+		GPIO.output(led, 1)
+		time.sleep(1)
+		GPIO.output(led, 0)
+		flash += 1
+	return
 
-#def fire_tube1():
-#	GPIO.output(tube1, 1)
-#	time.sleep(1)
-#	GPIO.output(tube1, 0)
-#	return
+def fire_tube1():
+	GPIO.output(tube1, 1)
+	time.sleep(1)
+	GPIO.output(tube1, 0)
+	return
 
-#def fire_tube2():
-#	GPIO.output(tube2, 1)
-#	time.sleep(1)
-#	GPIO.output(tube2, 0)
-#	return
+def fire_tube2():
+	GPIO.output(tube2, 1)
+	time.sleep(1)
+	GPIO.output(tube2, 0)
+	return
 
-#def fire_tube3():
-#	GPIO.output(tube3, 1)
-#	time.sleep(1)
-#	GPIO.output(tube3, 0)
-#	return
+def fire_tube3():
+	GPIO.output(tube3, 1)
+	time.sleep(1)
+	GPIO.output(tube3, 0)
+	return
 
 def randomize_tubes():
 	water = random.sample(range(1,7),2)
@@ -121,6 +121,10 @@ try:
 	print ("Candy Tube 4: %s" % candy4)
 
 	while True:
+
+		if GPIO.input(door1) == False:
+			if
+
 
 		n = int(input("\n\n1,2,3,4,5,6?: "))
 		if n == water1:
