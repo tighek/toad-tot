@@ -82,7 +82,7 @@ def randomize_tubes():
 	c2 = candy[1]
 	c3 = candy[2]
 	c4 = candy[3]
-	return (w1, w2, c1, c2, c3, c4)
+	return (water, candy, w1, w2, c1, c2, c3, c4)
 
 
 #
@@ -111,8 +111,10 @@ led = 4
 
 try:
 
-	water1, water2, candy1, candy2, candy3, candy4 = randomize_tubes()
+	water, candy, water1, water2, candy1, candy2, candy3, candy4 = randomize_tubes()
 
+	print (water)
+	print (candy)
 	print ("water tube 1: %s" % water1)
 	print ("water tube 2: %s" % water2)
 	print ("Candy Tube 1: %s" % candy1)
@@ -123,12 +125,12 @@ try:
 	while True:
 
 		n = int(input("\n\n1,2,3,4,5,6?: "))
-		if n == water1:
+		if n in water:
 			print ("Water")
-		if n == water2:
-			print ("Water")
-		else:
+		if n in candy:
 			print ("Candy")
+		else:
+			print ("Else")
 
 
 #while True:
