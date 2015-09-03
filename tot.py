@@ -102,18 +102,23 @@ led = 4
 
 # Startup
 
-# setup_channels()
-# flash_led()
-# fire_tube1()
-# fire_tube2()
-# fire_tube3()
+setup_channels()
+flash_led()
+time.sleep(2)
+fire_tube1()
+time.sleep(2)
+fire_tube2()
+time.sleep(2)
+fire_tube3()
+time.sleep(2)
+flash_led()
 
 
 try:
 
 	water, candy, water1, water2, candy1, candy2, candy3, candy4 = randomize_tubes()
 
-	print ("Water Tubes: %s %s" % water1 water2)
+	print ("Water Tubes: %s %s" % water1, water2)
 	print ("Candy Tubes: %s %s %s %s" % candy1, candy2, candy3, candy4)
 
 	while True:
