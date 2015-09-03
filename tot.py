@@ -113,12 +113,8 @@ try:
 
 	water, candy, water1, water2, candy1, candy2, candy3, candy4 = randomize_tubes()
 
-	print ("water tube 1: %s" % water1)
-	print ("water tube 2: %s" % water2)
-	print ("Candy Tube 1: %s" % candy1)
-	print ("Candy Tube 2: %s" % candy2)
-	print ("Candy Tube 3: %s" % candy3)
-	print ("Candy Tube 4: %s" % candy4)
+	print ("Water Tubes: %s %s" % water1 water2)
+	print ("Candy Tubes: %s %s %s %s" % candy1, candy2, candy3, candy4)
 
 	while True:
 
@@ -127,19 +123,11 @@ try:
 				fire_tube1()
 			if 1 in water:
 				fire_tube2()
+			else:
+				flash_led()
+				randomize_tubes()
 
 
-		n = int(input("\n\n1,2,3,4,5,6?: "))
-		if n == water1:
-			print ("Water")
-		if n == water2:
-			print ("Water")
-		else:
-			print ("Candy")
-
-
-#while True:
-#	if GPIO.input(door1) == False:
 
 
 # while True:
