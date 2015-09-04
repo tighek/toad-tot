@@ -40,8 +40,8 @@ import sys
 #	GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
 #	GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
 #	GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)
-#	# GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
-#	# GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
+	# GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
+	# GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
 #	return
 
 #def flash_led():
@@ -84,6 +84,60 @@ def randomize_tubes():
 	c4 = candy[3]
 	return (water, candy, w1, w2, c1, c2, c3, c4)
 
+def fire_candy(count,tube):
+	if count <=2:
+		if tube == 1:
+			#fire_tube1()
+			print ("Candy")
+			print ("Count: %s" % count)
+			print ("Tube: %s" % tube)
+			tube = 2
+			count += 1
+		elif tube == 2:
+			#fire_tube2()
+			print ("Candy")
+			print ("Count: %s" % count)
+			print ("Tube: %s" % tube)
+			tube = 1
+			count += 1
+	else:
+		fire_water(count,tube)
+	return (count,tube)
+
+
+def fire_water(w_cnt,c_cnt,w_tb,c_tb):
+	if w_cnt <= 2:
+		if w_tb == 1:
+			#fire_tube3()
+			print ("Water")
+			print ("Count: %s" % count)
+			print ("Tube: %s" % tube)
+			w_tb = 1
+			w_cnt += 1
+		elif w_tb == 2:
+			#fire_tube4()
+			print ("Water")
+			print ("Count: %s" % count)
+			print ("Tube: %s" % tube)
+			w_tb = 1
+			w_cnt += 1
+	else:
+		w_cnt,c_cnt,w_tb,c_tb = fire_candy(w_cnt,c_cnt,w_tb,c_tb)
+	return (w_cnt,c_cnt,w_tb,c_tb)
+
+
+#def startup():
+#	setup_channels()
+#	flash_led()
+#	time.sleep(2)
+#	fire_tube1()
+#	time.sleep(2)
+#	fire_tube2()
+#	time.sleep(2)
+#	fire_tube3()
+#	time.sleep(2)
+#	flash_led()
+#	return
 
 #
 # Define the RPi board channels for the inputs and outputs.
@@ -100,41 +154,83 @@ tube2 = 21
 tube3 = 22
 led = 4
 
-# Startup
+#
+# Startup and initialize everything.
+#
 
-# setup_channels()
-# flash_led()
-# fire_tube1()
-# fire_tube2()
-# fire_tube3()
+# startup()
 
 
 try:
 
 	water, candy, water1, water2, candy1, candy2, candy3, candy4 = randomize_tubes()
 
-	print (water)
-	print (candy)
-	print ("water tube 1: %s" % water1)
-	print ("water tube 2: %s" % water2)
-	print ("Candy Tube 1: %s" % candy1)
-	print ("Candy Tube 2: %s" % candy2)
-	print ("Candy Tube 3: %s" % candy3)
-	print ("Candy Tube 4: %s" % candy4)
+	print ("Water Tubes: %s" % water)
+	print ("Candy Tubes: %s" % candy)
+
+	w_count = 0
+	c_count = 0
+	w_tube = 1
+	c_tube = 1
 
 	while True:
 
 		n = int(input("\n\n1,2,3,4,5,6?: "))
-		if n in water:
-			print ("Water")
-		if n in candy:
-			print ("Candy")
-		else:
+		if n == 1:
+			if 1 in candy:
+				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+			elif 1 in water:
+				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+		elif n == 2:
+			if 2 in candy:
+				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+			elif 2 in water:
+				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+		elif n == 3:
+			if 3 in candy:
+				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+			elif 3 in water:
+				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+		elif n == 4:
+			if 4 in candy:
+				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+			elif 4 in water:
+				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+		elif n == 5:
+			if 5 in candy:
+				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+			elif 5 in water:
+				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+		elif n == 6:
+			if 6 in candy:
+				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+			elif 6 in water:
+				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+		elif n == 0:
 			print ("Else")
+			break
 
 
-#while True:
-#	if GPIO.input(door1) == False:
+
+#	while True:
+#
+#		if GPIO.input(door1) == False:
+#			if 1 in candy:
+#				fire_tube1()
+#			elif 1 in water:
+#				fire_tube2()
+#		elif GPIO.input(door2) == False:
+#			if 2 in candy:
+#				fire_tube3()
+#			elif 2 in water:
+#				fire_tube2()
+
+
+#			else:
+#				flash_led()
+#				randomize_tubes()
+
+
 
 
 # while True:
