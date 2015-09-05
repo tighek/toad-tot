@@ -32,30 +32,30 @@ import sys
 def setup_channels():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(door1, GPIO.IN)
-    GPIO.setup(door2, GPIO.IN)
-    GPIO.setup(door3, GPIO.IN)
-    GPIO.setup(door4, GPIO.IN)
-    GPIO.setup(door5, GPIO.IN)
-    GPIO.setup(door6, GPIO.IN)
-    GPIO.setup(tube1, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(tube4, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(tube5, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(tube6, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(spray1, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(bell, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(doors.get('door1'), GPIO.IN)
+    GPIO.setup(doors.get('door2'), GPIO.IN)
+    GPIO.setup(doors.get('door3'), GPIO.IN)
+    GPIO.setup(doors.get('door4'), GPIO.IN)
+    GPIO.setup(doors.get('door5'), GPIO.IN)
+    GPIO.setup(doors.get('door6'), GPIO.IN)
+    GPIO.setup(tubes.get('tube1'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(tubes.get('tube2'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(tubes.get('tube3'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(tubes.get('tube4'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(tubes.get('tube5'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(tubes.get('tube6'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(sprayers.get('spray1'), GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(bells.get('bell1'), GPIO.OUT, initial=GPIO.HIGH)
 #    GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
 #    GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
     return
 
 
-def ring_bell():
+def ring_bell(bell_num):
     print ("Ring")
-    GPIO.output(bell, 0)
+    GPIO.output(bell_num, 0)
     time.sleep(1)
-    GPIO.output(bell, 1)
+    GPIO.output(bell_num, 1)
     return
 
 
@@ -80,56 +80,19 @@ def randomize_tubes():
     rand_candy = list(range(1, 7))
     rand_candy.remove(w1)
     rand_candy.remove(w2)
-#	c1 = candy[0]
-#	c2 = candy[1]
-#	c3 = candy[2]
-#	c4 = candy[3]
-#	return (water, candy, w1, w2, c1, c2, c3, c4)
     return rand_water, rand_candy
 
 
 def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
 
-    if c_tb == 1 and c_cnt < 2:
+    if 1 <= c_tb <= 5 and c_cnt < 2:
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
         print ("Candy"),
         print ("w_cnt: %s" % w_cnt),
         print ("c_cnt: %s" % c_cnt),
         print ("c_tb: %s" % c_tb),
-        c_tb = 2
-    elif c_tb == 2 and c_cnt < 2:
-        c_cnt += 1
-        fire_tube(tubes.get("tube"+str(c_tb)))
-        print ("Candy"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
-        c_tb = 3
-    elif c_tb == 3 and c_cnt < 2:
-        c_cnt += 1
-        fire_tube(tubes.get("tube"+str(c_tb)))
-        print ("Candy"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
-        c_tb = 4
-    elif c_tb == 4 and c_cnt < 2:
-        c_cnt += 1
-        fire_tube(tubes.get("tube"+str(c_tb)))
-        print ("Candy"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
-        c_tb = 5
-    elif c_tb == 5 and c_cnt < 2:
-        c_cnt += 1
-        fire_tube(tubes.get("tube"+str(c_tb)))
-        print ("Candy"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
-        c_tb = 6
+        c_tb += 1
     elif c_tb == 6 and c_cnt < 2:
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
@@ -137,8 +100,9 @@ def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
         print ("w_cnt: %s" % w_cnt),
         print ("c_cnt: %s" % c_cnt),
         print ("c_tb: %s" % c_tb),
-        ring_bell()
+        ring_bell(bells.get('bell1'))
         c_tb = 1
+        w_cnt = 0
     else:
         c_cnt = 0
         print ("Candy Else"),
@@ -161,9 +125,6 @@ def fire_water(w_cnt, c_cnt, w_tb, c_tb):
     else:
         w_cnt = 0
         print ("Water Else"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
         w_cnt, c_cnt, w_tb, c_tb = fire_candy(w_cnt, c_cnt, w_tb, c_tb)
     return w_cnt, c_cnt, w_tb, c_tb
 
@@ -171,29 +132,18 @@ def fire_water(w_cnt, c_cnt, w_tb, c_tb):
 def startup():
     print ("Setup Channels")
     setup_channels()
-#    print ("Fire Tube 1")
-#    fire_tube1()
-#    time.sleep(1)
-#    print ("Fire Tube 2")
-#    fire_tube2()
-#    time.sleep(1)
-#    print ("Fire Tube 3")
-#    fire_tube3()
-#    time.sleep(1)
-#    print ("Fire Tube 4")
-#    fire_tube4()
-#    time.sleep(1)
-#    print ("Fire Tube 5")
-#    fire_tube5()
-#    time.sleep(1)
-#    print ("Fire Tube 6")
-#    fire_tube6()
-#    time.sleep(1)
-#    print ("Spray 1")
-#    spray_water()
-#    time.sleep(1)
-#    print ("Ring Bell")
-#    ring_bell()
+    check_tube = 1
+    while check_tube < 7:
+        fire_tube(tubes.get("tube"+str(check_tube)))
+        check_tube += 1
+    check_spray = 1
+    while check_spray < 2:
+        spray_water(sprayers.get("spray"+str(check_spray)))
+        check_spray += 1
+    check_bell = 1
+    while check_bell < 2:
+        ring_bell(bells.get("bell"+str(check_bell)))
+        check_bell += 1
     return
 
 
@@ -208,20 +158,20 @@ def startup():
 #
 
 
-door1 = 14
-door2 = 15
-door3 = 18
-door4 = 23
-door5 = 24
-door6 = 25
-tube1 = 2
-tube2 = 3
-tube3 = 4
-tube4 = 17
-tube5 = 27
-tube6 = 22
-spray1 = 10
-bell = 9
+#door1 = 14
+#door2 = 15
+#door3 = 18
+#door4 = 23
+#door5 = 24
+#door6 = 25
+#tube1 = 2
+#tube2 = 3
+#tube3 = 4
+#tube4 = 17
+#tube5 = 27
+#tube6 = 22
+#spray1 = 10
+#bell = 9
 
 tubes = {'tube1': 2, 'tube2': 3, 'tube3': 4, 'tube4': 17, 'tube5': 27, 'tube6': 22}
 doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 24, 'door5': 24, 'door6': 25}
