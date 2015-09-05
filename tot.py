@@ -32,7 +32,7 @@ import sys
 def setup_channels():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(doors.get('door1'), GPIO.IN)
+    GPIO.setup(doors.get('door1'), GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(doors.get('door2'), GPIO.IN)
     GPIO.setup(doors.get('door3'), GPIO.IN)
     GPIO.setup(doors.get('door4'), GPIO.IN)
@@ -63,6 +63,7 @@ def fire_tube(tb):
     GPIO.output(tb, 0)
     time.sleep(.5)
     GPIO.output(tb, 1)
+    tot_candy_metrics.write('1')
     return
 
 
@@ -70,6 +71,7 @@ def spray_water(tb):
     GPIO.output(tb, 0)
     time.sleep(.5)
     GPIO.output(tb, 1)
+    tot_water_metrics.write('1')
     return
 
 
@@ -89,7 +91,6 @@ def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
         c_tb += 1
-        tot_metrics.write('1')
     elif c_tb == 6 and c_cnt < 2:
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
@@ -146,6 +147,11 @@ doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 24, 'door5': 24, 'door6
 sprayers = {'spray1': 10}
 bells = {'bell1': 9}
 
+
+tot_candy_metrics = open('tot_candy_metrics', 'a')
+tot_water_metrics = open('tot_water_metrics', 'a')
+
+
 #
 # Startup and initialize everything.
 #
@@ -156,7 +162,7 @@ startup()
 
 try:
 
-    tot_metrics = open('tot_metrics', 'w')
+
 
     water, candy = randomize_tubes()
 
@@ -176,11 +182,11 @@ try:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 1 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-#        elif GPIO.input(door1) == True:
-#            if 1 in candy:
-#                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
-#            elif 1 in water:
-#                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+        elif GPIO.input(14) == False:
+            if 1 in candy:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 1 in water:
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
         elif n == 2:
             if 2 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
@@ -207,7 +213,8 @@ try:
             elif 6 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
         elif n == 0:
-            tot_metrics.close()
+            tot_candy_metrics.close()
+            tot_water_metrics.close()
             print ("Else")
             break
 
@@ -244,6 +251,8 @@ except Exception, err:
     print '-'*60
     traceback.print_exc(file=sys.stdout)
     print '-'*60
+    tot_candy_metrics.close()
+    tot_water_metrics.close()
 
 #except ValueError:
 #    print('Sample size exceeded population size.')
