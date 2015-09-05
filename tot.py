@@ -30,50 +30,95 @@ import sys
 
 
 def setup_channels():
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(door1, GPIO.IN)
+    print ("Door 1 Initialized")
     GPIO.setup(door2, GPIO.IN)
+    print ("Door 2 Initialized")
     GPIO.setup(door3, GPIO.IN)
+    print ("Door 3 Initialized")
     GPIO.setup(door4, GPIO.IN)
+    print ("Door 4 Initialized")
     GPIO.setup(door5, GPIO.IN)
+    print ("Door 5 Initialized")
+    GPIO.setup(door6, GPIO.IN)
+    print ("Door 6 Initialized")
     GPIO.setup(tube1, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Tube 1 Initialized")
     GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Tube 2 Initialized")
     GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
-#	GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
+    print ("Tube 3 Initialized")
+    GPIO.setup(tube4, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Tube 4 Initialized")
+    GPIO.setup(tube5, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Tube 5 Initialized")
+    GPIO.setup(tube6, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Tube 6 Initialized")
+    GPIO.setup(spray1, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Spray 1 Initialized")
+    GPIO.setup(bell, GPIO.OUT, initial=GPIO.HIGH)
+    print ("Bell Initialized")
+#    GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
+#    GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
     return
 
 
-def flash_led():
-    flash = 0
-    while flash < 2:
-        GPIO.output(led, 1)
-        time.sleep(1)
-        GPIO.output(led, 0)
-        flash += 1
+def ring_bell():
+    print ("Ring")
+    GPIO.output(bell, 0)
+    time.sleep(1)
+    GPIO.output(bell, 1)
     return
 
 
 def fire_tube1():
-    GPIO.output(tube1, 1)
-    time.sleep(1)
     GPIO.output(tube1, 0)
+    time.sleep(.5)
+    GPIO.output(tube1, 1)
     return
 
 
 def fire_tube2():
-    GPIO.output(tube2, 1)
-    time.sleep(1)
     GPIO.output(tube2, 0)
+    time.sleep(.5)
+    GPIO.output(tube2, 1)
     return
 
 
 def fire_tube3():
-    GPIO.output(tube3, 1)
-    time.sleep(1)
     GPIO.output(tube3, 0)
+    time.sleep(.5)
+    GPIO.output(tube3, 1)
+    return
+
+
+def fire_tube4():
+    GPIO.output(tube4, 0)
+    time.sleep(.5)
+    GPIO.output(tube4, 1)
+    return
+
+
+def fire_tube5():
+    GPIO.output(tube5, 0)
+    time.sleep(.5)
+    GPIO.output(tube5, 1)
+    return
+
+
+def fire_tube6():
+    GPIO.output(tube6, 0)
+    time.sleep(.5)
+    GPIO.output(tube6, 1)
+    return
+
+
+def spray_water():
+    GPIO.output(spray1, 0)
+    time.sleep(.5)
+    GPIO.output(spray1, 1)
     return
 
 
@@ -89,62 +134,155 @@ def randomize_tubes():
 #	c3 = candy[2]
 #	c4 = candy[3]
 #	return (water, candy, w1, w2, c1, c2, c3, c4)
-    return water, candy
+    return rand_water, rand_candy
 
 
-def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
-    if c_cnt <= 2:
-        if c_tb == 1:
+def fire_candy(w_cnt, c_cnt, w_tb, c_tb, w_c, c_c):
+    if c_cnt <= 6:
+        if c_tb == 1 and c_c < 2:
+            c_cnt += 1
+            c_c += 1
             fire_tube1()
             print ("Candy")
-            print ("Count: %s" % c_cnt)
-            print ("Tube: %s" % c_tb)
+            print ("w_cnt: %s" % w_cnt)
+            print ("c_cnt: %s" % c_cnt)
+            print ("w_tb: %s" % w_tb)
+            print ("c_tb: %s" % c_tb)
+            print ("w_c: %s" % w_c)
+            print ("c_c: %s" % c_c)
             c_tb = 2
+        elif c_tb == 2 and c_c < 2:
             c_cnt += 1
-        elif c_tb == 2:
+            c_c += 1
             fire_tube2()
             print ("Candy")
-            print ("Count: %s" % c_cnt)
-            print ("Tube: %s" % c_tb)
-            c_tb = 1
+            print ("w_cnt: %s" % w_cnt)
+            print ("c_cnt: %s" % c_cnt)
+            print ("w_tb: %s" % w_tb)
+            print ("c_tb: %s" % c_tb)
+            print ("w_c: %s" % w_c)
+            print ("c_c: %s" % c_c)
+            c_tb = 3
+        elif c_tb == 3 and c_c < 2:
             c_cnt += 1
-    else:
-        w_cnt, c_cnt, w_tb, c_tb = fire_water(w_cnt, c_cnt, w_tb, c_tb)
-    return w_cnt, c_cnt, w_tb, c_tb
-
-
-def fire_water(w_cnt, c_cnt, w_tb, c_tb):
-    if w_cnt <= 2:
-        if w_tb == 1:
+            c_c += 1
             fire_tube3()
-            print ("Water")
-            print ("Count: %s" % w_cnt)
-            print ("Tube: %s" % w_tb)
-            w_tb = 1
-            w_cnt += 1
-        elif w_tb == 2:
-#			fire_tube4()
-            print ("Water")
-            print ("Count: %s" % w_cnt)
-            print ("Tube: %s" % w_tb)
-            w_tb = 1
-            w_cnt += 1
+            print ("Candy")
+            print ("w_cnt: %s" % w_cnt)
+            print ("c_cnt: %s" % c_cnt)
+            print ("w_tb: %s" % w_tb)
+            print ("c_tb: %s" % c_tb)
+            print ("w_c: %s" % w_c)
+            print ("c_c: %s" % c_c)
+            c_tb = 4
+        elif c_tb == 4 and c_c < 2:
+            c_cnt += 1
+            c_c += 1
+            fire_tube4()
+            print ("Candy")
+            print ("w_cnt: %s" % w_cnt)
+            print ("c_cnt: %s" % c_cnt)
+            print ("w_tb: %s" % w_tb)
+            print ("c_tb: %s" % c_tb)
+            print ("w_c: %s" % w_c)
+            print ("c_c: %s" % c_c)
+            c_tb = 5
+        elif c_tb == 5 and c_c < 2:
+            c_cnt += 1
+            c_c += 1
+            fire_tube5()
+            print ("Candy")
+            print ("w_cnt: %s" % w_cnt)
+            print ("c_cnt: %s" % c_cnt)
+            print ("w_tb: %s" % w_tb)
+            print ("c_tb: %s" % c_tb)
+            print ("w_c: %s" % w_c)
+            print ("c_c: %s" % c_c)
+            c_tb = 6
+    elif c_cnt == 6:
+        c_cnt = 0
+        c_c += 1
+        fire_tube6()
+        print ("Candy")
+        print ("w_cnt: %s" % w_cnt)
+        print ("c_cnt: %s" % c_cnt)
+        print ("w_tb: %s" % w_tb)
+        print ("c_tb: %s" % c_tb)
+        print ("w_c: %s" % w_c)
+        print ("c_c: %s" % c_c)
+        ring_bell()
+        c_tb = 1
+
     else:
-        w_cnt, c_cnt, w_tb, c_tb = fire_candy(w_cnt, c_cnt, w_tb, c_tb)
-    return w_cnt, c_cnt, w_tb, c_tb
+        c_c = 0
+        print ("Else")
+        print ("w_cnt: %s" % w_cnt)
+        print ("c_cnt: %s" % c_cnt)
+        print ("w_tb: %s" % w_tb)
+        print ("c_tb: %s" % c_tb)
+        print ("w_c: %s" % w_c)
+        print ("c_c: %s" % c_c)
+        w_cnt, c_cnt, w_tb, c_tb, w_c, c_c = fire_water(w_cnt, c_cnt, w_tb, c_tb, w_c, c_c)
+    return w_cnt, c_cnt, w_tb, c_tb, w_c, c_c
+
+
+def fire_water(w_cnt, c_cnt, w_tb, c_tb, w_c, c_c):
+    if w_cnt <= 2:
+        if w_tb == 1 and w_c < 2:
+            w_cnt += 1
+            w_c += 1
+            spray_water()
+            print ("Water")
+            print ("w_cnt: %s" % w_cnt)
+            print ("c_cnt: %s" % c_cnt)
+            print ("w_tb: %s" % w_tb)
+            print ("c_tb: %s" % c_tb)
+            print ("w_c: %s" % w_c)
+            print ("c_c: %s" % c_c)
+            w_tb = 1
+    else:
+        w_c = 0
+        w_cnt = 0
+        print ("Else")
+        print ("w_cnt: %s" % w_cnt)
+        print ("c_cnt: %s" % c_cnt)
+        print ("w_tb: %s" % w_tb)
+        print ("c_tb: %s" % c_tb)
+        print ("w_c: %s" % w_c)
+        print ("c_c: %s" % c_c)
+        w_cnt, c_cnt, w_tb, c_tb, w_c, c_c = fire_candy(w_cnt, c_cnt, w_tb, c_tb, w_c, c_c)
+    return w_cnt, c_cnt, w_tb, c_tb, w_c, c_c
 
 
 def startup():
+    print ("Setup Channels")
     setup_channels()
-#	flash_led()
-    time.sleep(2)
+#    print ("Flash LED")
+#    flash_led()
+#    time.sleep(1)
+    print ("Fire Tube 1")
     fire_tube1()
-    time.sleep(2)
+    time.sleep(1)
+    print ("Fire Tube 2")
     fire_tube2()
-    time.sleep(2)
+    time.sleep(1)
+    print ("Fire Tube 3")
     fire_tube3()
-    time.sleep(2)
-#	flash_led()
+    time.sleep(1)
+    print ("Fire Tube 4")
+    fire_tube4()
+    time.sleep(1)
+    print ("Fire Tube 5")
+    fire_tube5()
+    time.sleep(1)
+    print ("Fire Tube 6")
+    fire_tube6()
+    time.sleep(1)
+    print ("Spray 1")
+    spray_water()
+#    time.sleep(1)
+#    print ("Flash LED")
+#    flash_led()
     return
 
 
@@ -168,17 +306,23 @@ door6 = 25
 tube1 = 2
 tube2 = 3
 tube3 = 4
-led = 9
+tube4 = 17
+tube5 = 27
+tube6 = 22
+spray1 = 10
+bell = 9
 
 #
 # Startup and initialize everything.
 #
 
+print ("Startup Routine")
 startup()
 
 
 try:
 
+    print ("Initial Randomization for tubes")
     water, candy = randomize_tubes()
 
     print ("Water Tubes: %s" % water)
@@ -188,40 +332,42 @@ try:
     c_count = 0
     w_tube = 1
     c_tube = 1
+    w_con = 0
+    c_con = 0
 
     while True:
 
         n = int(input("\n\n1,2,3,4,5,6?: "))
         if n == 1:
             if 1 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_candy(w_count, c_count, w_tube, c_tube, w_con, c_con)
             elif 1 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_water(w_count, c_count, w_tube, c_tube, w_con, c_con)
         elif n == 2:
             if 2 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_candy(w_count, c_count, w_tube, c_tube, w_con, c_con)
             elif 2 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_water(w_count, c_count, w_tube, c_tube, w_con, c_con)
         elif n == 3:
             if 3 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_candy(w_count, c_count, w_tube, c_tube, w_con, c_con)
             elif 3 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_water(w_count, c_count, w_tube, c_tube, w_con, c_con)
         elif n == 4:
             if 4 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_candy(w_count, c_count, w_tube, c_tube, w_con, c_con)
             elif 4 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_water(w_count, c_count, w_tube, c_tube, w_con, c_con)
         elif n == 5:
             if 5 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_candy(w_count, c_count, w_tube, c_tube, w_con, c_con)
             elif 5 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_water(w_count, c_count, w_tube, c_tube, w_con, c_con)
         elif n == 6:
             if 6 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_candy(w_count, c_count, w_tube, c_tube, w_con, c_con)
             elif 6 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+                w_count, c_count, w_tube, c_tube, w_con, c_con = fire_water(w_count, c_count, w_tube, c_tube, w_con, c_con)
         elif n == 0:
             print ("Else")
             break
