@@ -23,26 +23,26 @@
 # We are back in 2015 with this new and improved version!
 #
 
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import random
 import sys
 
-#def setup_channels():
-#	GPIO.setmode(GPIO.BOARD)
-#	GPIO.setwarnings(False)
-#	GPIO.setup(door1, GPIO.IN)
-#	GPIO.setup(door2, GPIO.IN)
-#	GPIO.setup(door3, GPIO.IN)
-#	GPIO.setup(door4, GPIO.IN)
-#	GPIO.setup(door5, GPIO.IN)
-#	GPIO.setup(tube1, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
-#	GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)
-	# GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
-	# GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
-#	return
+def setup_channels():
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setwarnings(False)
+	GPIO.setup(door1, GPIO.IN)
+	GPIO.setup(door2, GPIO.IN)
+	GPIO.setup(door3, GPIO.IN)
+	GPIO.setup(door4, GPIO.IN)
+	GPIO.setup(door5, GPIO.IN)
+	GPIO.setup(tube1, GPIO.OUT, initial=GPIO.HIGH)
+	GPIO.setup(tube2, GPIO.OUT, initial=GPIO.HIGH)
+	GPIO.setup(tube3, GPIO.OUT, initial=GPIO.HIGH)
+	GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)
+#	GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
+#	GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
+	return
 
 #def flash_led():
 #	flash = 0
@@ -53,23 +53,23 @@ import sys
 #		flash += 1
 #	return
 
-#def fire_tube1():
-#	GPIO.output(tube1, 1)
-#	time.sleep(1)
-#	GPIO.output(tube1, 0)
-#	return
+def fire_tube1():
+	GPIO.output(tube1, 1)
+	time.sleep(1)
+	GPIO.output(tube1, 0)
+	return
 
-#def fire_tube2():
-#	GPIO.output(tube2, 1)
-#	time.sleep(1)
-#	GPIO.output(tube2, 0)
-#	return
+def fire_tube2():
+	GPIO.output(tube2, 1)
+	time.sleep(1)
+	GPIO.output(tube2, 0)
+	return
 
-#def fire_tube3():
-#	GPIO.output(tube3, 1)
-#	time.sleep(1)
-#	GPIO.output(tube3, 0)
-#	return
+def fire_tube3():
+	GPIO.output(tube3, 1)
+	time.sleep(1)
+	GPIO.output(tube3, 0)
+	return
 
 def randomize_tubes():
 	water = random.sample(range(1,7),2)
@@ -78,66 +78,67 @@ def randomize_tubes():
 	candy = list(range(1,7))
 	candy.remove(w1)
 	candy.remove(w2)
-	c1 = candy[0]
-	c2 = candy[1]
-	c3 = candy[2]
-	c4 = candy[3]
-	return (water, candy, w1, w2, c1, c2, c3, c4)
+#	c1 = candy[0]
+#	c2 = candy[1]
+#	c3 = candy[2]
+#	c4 = candy[3]
+#	return (water, candy, w1, w2, c1, c2, c3, c4)
+	return (water, candy)
 
-def fire_candy(count,tube):
-	if count <=2:
-		if tube == 1:
-			#fire_tube1()
+def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
+	if c_cnt <=2:
+		if c_tb == 1:
+			fire_tube1()
 			print ("Candy")
-			print ("Count: %s" % count)
-			print ("Tube: %s" % tube)
-			tube = 2
-			count += 1
-		elif tube == 2:
-			#fire_tube2()
+			print ("Count: %s" % c_cnt)
+			print ("Tube: %s" % c_tb)
+			c_tb = 2
+			c_cnt += 1
+		elif c_tb == 2:
+			fire_tube2()
 			print ("Candy")
-			print ("Count: %s" % count)
-			print ("Tube: %s" % tube)
-			tube = 1
-			count += 1
+			print ("Count: %s" % c_cnt)
+			print ("Tube: %s" % c_tb)
+			c_tb = 1
+			c_cnt += 1
 	else:
-		fire_water(count,tube)
-	return (count,tube)
+		w_cnt, c_cnt, w_tb, c_tb = fire_water(w_cnt, c_cnt, w_tb, c_tb)
+	return (w_cnt, c_cnt, w_tb, c_tb)
 
 
-def fire_water(w_cnt,c_cnt,w_tb,c_tb):
+def fire_water(w_cnt, c_cnt, w_tb, c_tb):
 	if w_cnt <= 2:
 		if w_tb == 1:
-			#fire_tube3()
+			fire_tube3()
 			print ("Water")
-			print ("Count: %s" % count)
-			print ("Tube: %s" % tube)
+			print ("Count: %s" % w_cnt)
+			print ("Tube: %s" % w_tb)
 			w_tb = 1
 			w_cnt += 1
 		elif w_tb == 2:
-			#fire_tube4()
+#			fire_tube4()
 			print ("Water")
-			print ("Count: %s" % count)
-			print ("Tube: %s" % tube)
+			print ("Count: %s" % w_cnt)
+			print ("Tube: %s" % w_tb)
 			w_tb = 1
 			w_cnt += 1
 	else:
-		w_cnt,c_cnt,w_tb,c_tb = fire_candy(w_cnt,c_cnt,w_tb,c_tb)
-	return (w_cnt,c_cnt,w_tb,c_tb)
+		w_cnt,c_cnt,w_tb,c_tb = fire_candy(w_cnt, c_cnt, w_tb, c_tb)
+	return (w_cnt, c_cnt, w_tb, c_tb)
 
 
-#def startup():
-#	setup_channels()
+def startup():
+	setup_channels()
 #	flash_led()
-#	time.sleep(2)
-#	fire_tube1()
-#	time.sleep(2)
-#	fire_tube2()
-#	time.sleep(2)
-#	fire_tube3()
-#	time.sleep(2)
+	time.sleep(2)
+	fire_tube1()
+	time.sleep(2)
+	fire_tube2()
+	time.sleep(2)
+	fire_tube3()
+	time.sleep(2)
 #	flash_led()
-#	return
+	return
 
 #
 # Define the RPi board channels for the inputs and outputs.
@@ -158,12 +159,12 @@ led = 4
 # Startup and initialize everything.
 #
 
-# startup()
+startup()
 
 
 try:
 
-	water, candy, water1, water2, candy1, candy2, candy3, candy4 = randomize_tubes()
+	water, candy = randomize_tubes()
 
 	print ("Water Tubes: %s" % water)
 	print ("Candy Tubes: %s" % candy)
@@ -178,34 +179,34 @@ try:
 		n = int(input("\n\n1,2,3,4,5,6?: "))
 		if n == 1:
 			if 1 in candy:
-				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+				candy_count, candy_tube = fire_candy(w_count, c_count, w_tube, c_tube)
 			elif 1 in water:
-				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+				water_count, water_tube = fire_water(w_count, c_count, w_tube, c_tube)
 		elif n == 2:
 			if 2 in candy:
-				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+				candy_count, candy_tube = fire_candy(w_count, c_count, w_tube, c_tube)
 			elif 2 in water:
-				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+				water_count, water_tube = fire_water(w_count, c_count, w_tube, c_tube)
 		elif n == 3:
 			if 3 in candy:
-				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+				candy_count, candy_tube = fire_candy(w_count, c_count, w_tube, c_tube)
 			elif 3 in water:
-				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+				water_count, water_tube = fire_water(w_count, c_count, w_tube, c_tube)
 		elif n == 4:
 			if 4 in candy:
-				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+				candy_count, candy_tube = fire_candy(w_count, c_count, w_tube, c_tube)
 			elif 4 in water:
-				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+				water_count, water_tube = fire_water(w_count, c_count, w_tube, c_tube)
 		elif n == 5:
 			if 5 in candy:
-				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+				candy_count, candy_tube = fire_candy(w_count, c_count, w_tube, c_tube)
 			elif 5 in water:
-				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+				water_count, water_tube = fire_water(w_count, c_count, w_tube, c_tube)
 		elif n == 6:
 			if 6 in candy:
-				candy_count, candy_tube = fire_candy(w_count,c_count,w_tube,c_tube)
+				candy_count, candy_tube = fire_candy(w_count, c_count, w_tube, c_tube)
 			elif 6 in water:
-				water_count, water_tube = fire_water(w_count,c_count,w_tube,c_tube)
+				water_count, water_tube = fire_water(w_count, c_count, w_tube, c_tube)
 		elif n == 0:
 			print ("Else")
 			break
