@@ -88,27 +88,16 @@ def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
     if 1 <= c_tb <= 5 and c_cnt < 2:
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
-        print ("Candy"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
         c_tb += 1
+        tot_metrics.write('1')
     elif c_tb == 6 and c_cnt < 2:
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
-        print ("Candy"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
         ring_bell(bells.get('bell1'))
         c_tb = 1
         w_cnt = 0
     else:
         c_cnt = 0
-        print ("Candy Else"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb),
         w_cnt, c_cnt, w_tb, c_tb = fire_water(w_cnt, c_cnt, w_tb, c_tb)
     return w_cnt, c_cnt, w_tb, c_tb
 
@@ -117,14 +106,9 @@ def fire_water(w_cnt, c_cnt, w_tb, c_tb):
     if w_tb == 1 and w_cnt <= 2:
         w_cnt += 1
         spray_water(sprayers.get("spray"+str(w_tb)))
-        print ("Water"),
-        print ("w_cnt: %s" % w_cnt),
-        print ("c_cnt: %s" % c_cnt),
-        print ("c_tb: %s" % c_tb)
         w_tb = 1
     else:
         w_cnt = 0
-        print ("Water Else"),
         w_cnt, c_cnt, w_tb, c_tb = fire_candy(w_cnt, c_cnt, w_tb, c_tb)
     return w_cnt, c_cnt, w_tb, c_tb
 
@@ -157,22 +141,6 @@ def startup():
 # [3v] [ 2] [ 3] [ 4] [GG] [17] [27] [22] [3v] [10] [ 9] [11] [GG]
 #
 
-
-#door1 = 14
-#door2 = 15
-#door3 = 18
-#door4 = 23
-#door5 = 24
-#door6 = 25
-#tube1 = 2
-#tube2 = 3
-#tube3 = 4
-#tube4 = 17
-#tube5 = 27
-#tube6 = 22
-#spray1 = 10
-#bell = 9
-
 tubes = {'tube1': 2, 'tube2': 3, 'tube3': 4, 'tube4': 17, 'tube5': 27, 'tube6': 22}
 doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 24, 'door5': 24, 'door6': 25}
 sprayers = {'spray1': 10}
@@ -187,6 +155,8 @@ startup()
 
 
 try:
+
+    tot_metrics = open('tot_metrics', 'w')
 
     water, candy = randomize_tubes()
 
@@ -237,6 +207,7 @@ try:
             elif 6 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
         elif n == 0:
+            tot_metrics.close()
             print ("Else")
             break
 
