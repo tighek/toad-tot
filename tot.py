@@ -151,17 +151,24 @@ def startup():
 #
 # Define the RPi board channels for the inputs and outputs.
 #
+# Raspberry Pi Mod A and Mod B GPIO Pinout
+# GG = Ground, 5v = +5 volt, 3v = +3 volt
+#
+# [5v] [5v] [GG] [14] [15] [18] [GG] [23] [24] [GG] [25] [ 8] [ 7]
+# [3v] [ 2] [ 3] [ 4] [GG] [17] [27] [22] [3v] [10] [ 9] [11] [GG]
+#
 
-door1 = 11
-door2 = 12
-door3 = 13
-door4 = 14
-door5 = 15
-door6 = 16
-tube1 = 20
-tube2 = 21
-tube3 = 22
-led = 4
+
+door1 = 14
+door2 = 15
+door3 = 18
+door4 = 23
+door5 = 24
+door6 = 25
+tube1 = 2
+tube2 = 3
+tube3 = 4
+led = 9
 
 #
 # Startup and initialize everything.
