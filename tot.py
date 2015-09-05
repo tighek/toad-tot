@@ -45,6 +45,7 @@ def setup_channels():
 #	GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
     return
 
+
 def flash_led():
     flash = 0
     while flash < 2:
@@ -77,22 +78,22 @@ def fire_tube3():
 
 
 def randomize_tubes():
-    water = random.sample(range(1,7),2)
-    w1 = water[0]
-    w2 = water[1]
-    candy = list(range(1,7))
-    candy.remove(w1)
-    candy.remove(w2)
+    rand_water = random.sample(range(1, 7), 2)
+    w1 = rand_water[0]
+    w2 = rand_water[1]
+    rand_candy = list(range(1, 7))
+    rand_candy.remove(w1)
+    rand_candy.remove(w2)
 #	c1 = candy[0]
 #	c2 = candy[1]
 #	c3 = candy[2]
 #	c4 = candy[3]
 #	return (water, candy, w1, w2, c1, c2, c3, c4)
-    return (water, candy)
+    return water, candy
 
 
 def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
-    if c_cnt <=2:
+    if c_cnt <= 2:
         if c_tb == 1:
             fire_tube1()
             print ("Candy")
@@ -109,7 +110,7 @@ def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
             c_cnt += 1
     else:
         w_cnt, c_cnt, w_tb, c_tb = fire_water(w_cnt, c_cnt, w_tb, c_tb)
-    return (w_cnt, c_cnt, w_tb, c_tb)
+    return w_cnt, c_cnt, w_tb, c_tb
 
 
 def fire_water(w_cnt, c_cnt, w_tb, c_tb):
@@ -129,8 +130,8 @@ def fire_water(w_cnt, c_cnt, w_tb, c_tb):
             w_tb = 1
             w_cnt += 1
     else:
-        w_cnt,c_cnt,w_tb,c_tb = fire_candy(w_cnt, c_cnt, w_tb, c_tb)
-    return (w_cnt, c_cnt, w_tb, c_tb)
+        w_cnt, c_cnt, w_tb, c_tb = fire_candy(w_cnt, c_cnt, w_tb, c_tb)
+    return w_cnt, c_cnt, w_tb, c_tb
 
 
 def startup():
