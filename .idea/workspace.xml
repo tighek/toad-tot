@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e18ccc4f-95fe-42fa-9825-185cd6fa5f9f" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/input.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_var.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tot.py" afterPath="$PROJECT_DIR$/tot.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="tot_automation.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,20 +28,7 @@
     <favorites_list name="tot_automation" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="tot.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tot.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.8779714">
-              <caret line="280" column="53" selection-start-line="280" selection-start-column="53" selection-end-line="280" selection-end-column="53" />
-              <folding>
-                <element signature="e#1023#1046#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -51,10 +36,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/input.py" />
         <option value="$PROJECT_DIR$/test_var.py" />
+        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/tot.py" />
       </list>
     </option>
@@ -67,8 +52,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="195" />
-    <option name="y" value="31" />
+    <option name="x" value="190" />
+    <option name="y" value="30" />
     <option name="width" value="1159" />
     <option name="height" value="751" />
   </component>
@@ -405,7 +390,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="195" y="31" width="1159" height="751" extended-state="0" />
+    <frame x="190" y="30" width="1159" height="751" extended-state="1" />
     <editor active="false" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -480,16 +465,16 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.965517">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.87541527">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.8779714">
-          <caret line="280" column="53" selection-start-line="280" selection-start-column="53" selection-end-line="280" selection-end-column="53" />
+        <state vertical-scroll-proportion="-1.2345483">
+          <caret line="214" column="10" selection-start-line="214" selection-start-column="10" selection-end-line="214" selection-end-column="10" />
           <folding>
             <element signature="e#1023#1046#0" expanded="true" />
           </folding>

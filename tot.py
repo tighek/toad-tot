@@ -207,16 +207,12 @@ try:
     w_tube = 1
     c_tube = 1
 
-    print GPIO.input (doors.get('door1'))
-    print GPIO.input (doors.get('door2'))
-    print GPIO.input (doors.get('door3'))
-    print GPIO.input (doors.get('door4'))
-    print GPIO.input (doors.get('door5'))
-    print GPIO.input (doors.get('door6'))
-
     while True:
 
-        if GPIO.input(doors.get('door1')) == False:
+        if GPIO.input(buttons.get('water_only')) == False and GPIO.input(buttons.get('candy_only')) == False:
+            ring_bell(bells.get('bell1'))
+            time.sleep (60)
+        elif GPIO.input(doors.get('door1')) == False:
             if water_spray_only == 1:
                 w_cnt = 0
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
