@@ -38,6 +38,9 @@ def setup_channels():
     GPIO.setup(doors.get('door4'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
     GPIO.setup(doors.get('door5'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
     GPIO.setup(doors.get('door6'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(buttons.get('reset'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(buttons.get('candy_only'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(buttons.get('water_only'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
     GPIO.setup(tubes.get('tube1'), GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(tubes.get('tube2'), GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(tubes.get('tube3'), GPIO.OUT, initial=GPIO.HIGH)
@@ -46,8 +49,6 @@ def setup_channels():
     GPIO.setup(tubes.get('tube6'), GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(sprayers.get('spray1'), GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(bells.get('bell1'), GPIO.OUT, initial=GPIO.HIGH)
-#    GPIO.setup(right_button, GPIO.IN, GPIO.PUD_UP)
-#    GPIO.setup(left_button, GPIO.IN, GPIO.PUD_UP)
     return
 
 
@@ -63,7 +64,6 @@ def fire_tube(tb):
     GPIO.output(tb, 0)
     time.sleep(.5)
     GPIO.output(tb, 1)
-    tot_candy_metrics.write('1')
     return
 
 
@@ -71,7 +71,6 @@ def spray_water(tb):
     GPIO.output(tb, 0)
     time.sleep(.5)
     GPIO.output(tb, 1)
-    tot_water_metrics.write('1')
     return
 
 
@@ -86,12 +85,32 @@ def randomize_tubes():
 
 
 def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
-
+    if candy_tube_only == 1 and c_tb < 6:
+        tot_candy_metrics = open('tot_candy_metrics', 'a')
+        tot_candy_metrics.write('1')
+        tot_candy_metrics.close()
+        c_cnt = 0
+        fire_tube(tubes.get("tube"+str(c_tb)))
+        c_tb += 1
+    elif candy_tube_only == 1 and c_tb == 6:
+        tot_candy_metrics = open('tot_candy_metrics', 'a')
+        tot_candy_metrics.write('1')
+        tot_candy_metrics.close()
+        c_cnt = 0
+        fire_tube(tubes.get("tube"+str(c_tb)))
+        ring_bell(bells.get('bell1'))
+        c_tb = 1
     if 1 <= c_tb <= 5 and c_cnt < 2:
+        tot_candy_metrics = open('tot_candy_metrics', 'a')
+        tot_candy_metrics.write('1')
+        tot_candy_metrics.close()
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
         c_tb += 1
     elif c_tb == 6 and c_cnt < 2:
+        tot_candy_metrics = open('tot_candy_metrics', 'a')
+        tot_candy_metrics.write('1')
+        tot_candy_metrics.close()
         c_cnt += 1
         fire_tube(tubes.get("tube"+str(c_tb)))
         ring_bell(bells.get('bell1'))
@@ -104,7 +123,16 @@ def fire_candy(w_cnt, c_cnt, w_tb, c_tb):
 
 
 def fire_water(w_cnt, c_cnt, w_tb, c_tb):
-    if w_tb == 1 and w_cnt <= 2:
+    if water_spray_only == 1:
+        tot_water_metrics = open('tot_water_metrics', 'a')
+        tot_water_metrics.write('1')
+        tot_water_metrics.close()
+        spray_water(sprayers.get("spray"+str(w_tb)))
+        w_tb = 1
+    elif w_tb == 1 and w_cnt <= 2:
+        tot_water_metrics = open('tot_water_metrics', 'a')
+        tot_water_metrics.write('1')
+        tot_water_metrics.close()
         w_cnt += 1
         spray_water(sprayers.get("spray"+str(w_tb)))
         w_tb = 1
@@ -114,21 +142,29 @@ def fire_water(w_cnt, c_cnt, w_tb, c_tb):
     return w_cnt, c_cnt, w_tb, c_tb
 
 
+def reset_counters(w_cnt, c_cnt, w_tb, c_tb):
+    w_cnt = 0
+    c_cnt = 0
+    w_tb = 0
+    c_tb = 0
+    return w_cnt, c_cnt, w_tb, c_tb
+
+
 def startup():
     print ("Setup Channels")
     setup_channels()
-#    check_tube = 1
-#    while check_tube < 7:
-#        fire_tube(tubes.get("tube"+str(check_tube)))
-#        check_tube += 1
-#    check_spray = 1
-#    while check_spray < 2:
-#        spray_water(sprayers.get("spray"+str(check_spray)))
-#        check_spray += 1
-#    check_bell = 1
-#    while check_bell < 2:
-#        ring_bell(bells.get("bell"+str(check_bell)))
-#        check_bell += 1
+    check_tube = 1
+    while check_tube < 7:
+        fire_tube(tubes.get("tube"+str(check_tube)))
+        check_tube += 1
+    check_spray = 1
+    while check_spray < 2:
+        spray_water(sprayers.get("spray"+str(check_spray)))
+        check_spray += 1
+    check_bell = 1
+    while check_bell < 2:
+        ring_bell(bells.get("bell"+str(check_bell)))
+        check_bell += 1
     return
 
 
@@ -143,14 +179,10 @@ def startup():
 #
 
 tubes = {'tube1': 2, 'tube2': 3, 'tube3': 4, 'tube4': 17, 'tube5': 27, 'tube6': 22}
-doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 24, 'door5': 24, 'door6': 25}
+doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 23, 'door5': 24, 'door6': 25}
 sprayers = {'spray1': 10}
 bells = {'bell1': 9}
-
-
-tot_candy_metrics = open('tot_candy_metrics', 'a')
-tot_water_metrics = open('tot_water_metrics', 'a')
-
+buttons = {'reset': 8, 'water_only': 7, 'candy_only': 11}
 
 #
 # Startup and initialize everything.
@@ -167,6 +199,9 @@ try:
     print ("Water Tubes: %s" % water)
     print ("Candy Tubes: %s" % candy)
 
+    water_spray_only = 0
+    candy_tube_only = 0
+
     w_count = 0
     c_count = 0
     w_tube = 1
@@ -181,69 +216,77 @@ try:
 
     while True:
 
-        n = int(input("\n\n1,2,3,4,5,6?: "))
-        if n == 1 or GPIO.input(doors.get('door1')) == False:
-            if 1 in candy:
+        if GPIO.input(doors.get('door1')) == False:
+            if water_spray_only == 1:
+                w_cnt = 0
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+            elif candy_tube_only == 1:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 1 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 1 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 2 or GPIO.input(doors.get('door2')) == False:
-            if 2 in candy:
+        elif GPIO.input(doors.get('door2')) == False:
+            if water_spray_only == 1:
+                w_cnt = 0
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+            elif candy_tube_only == 1:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 2 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 2 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 3 or GPIO.input(7) == False:
-            if 3 in candy:
+        elif GPIO.input(doors.get('door3')) == False:
+            if water_spray_only == 1:
+                w_cnt = 0
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+            elif candy_tube_only == 1:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 3 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 3 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 4:
-            if 4 in candy:
+        elif GPIO.input(doors.get('door4')) == False:
+            if water_spray_only == 1:
+                w_cnt = 0
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+            elif candy_tube_only == 1:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 4 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 4 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 5:
-            if 5 in candy:
+        elif GPIO.input(doors.get('door5')) == False:
+            if water_spray_only == 1:
+                w_cnt = 0
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+            elif candy_tube_only == 1:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 5 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 5 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 6:
-            if 6 in candy:
+        elif GPIO.input(doors.get('door6')) == False:
+            if water_spray_only == 1:
+                w_cnt = 0
+                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
+            elif candy_tube_only == 1:
+                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
+            elif 6 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 6 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 0:
-            tot_candy_metrics.close()
-            tot_water_metrics.close()
-            print ("Else")
-            break
+        elif GPIO.input(buttons.get('reset')) == False:
+            reset_counters(w_count, c_count, w_tube, c_tube)
+        elif GPIO.input(buttons.get('water_only')) = False:
+            water_spray_only = 1
+        elif GPIO.input(buttons.get('water_only')) = True:
+            water_spray_only = 0
+        elif GPIO.input(buttons.get('candy_only')) = False:
+            candy_tube_only = 1
+        elif GPIO.input(buttons.get('candy_only')) = True:
+            candy_tube_only = 0
 
-
-
-#	while True:
-#
-#		if GPIO.input(door1) == False:
-#			if 1 in candy:
-#				fire_tube1()
-#			elif 1 in water:
-#				fire_tube2()
-#		elif GPIO.input(door2) == False:
-#			if 2 in candy:
-#				fire_tube3()
-#			elif 2 in water:
-#				fire_tube2()
-#			else:
-#				flash_led()
-#				randomize_tubes()
-
-
-# while True:
-#    if GPIO.input(left_button) == False:
-#            print("Left button pressed")
-#            break
-#        if GPIO.input(right_button) == False:
-#            print("Right button pressed")
-#            break
 
 except Exception, err:
     print "Exception:", str(err)
