@@ -294,8 +294,6 @@ except Exception, err:
     print '-'*60
     traceback.print_exc(file=sys.stdout)
     print '-'*60
-    tot_candy_metrics.close()
-    tot_water_metrics.close()
 
 #except ValueError:
 #    print('Sample size exceeded population size.')
