@@ -278,13 +278,13 @@ try:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
         elif GPIO.input(buttons.get('reset')) == False:
             reset_counters(w_count, c_count, w_tube, c_tube)
-        elif GPIO.input(buttons.get('water_only')) = False:
+        elif GPIO.input(buttons.get('water_only')) == False:
             water_spray_only = 1
-        elif GPIO.input(buttons.get('water_only')) = True:
+        elif GPIO.input(buttons.get('water_only')) == True:
             water_spray_only = 0
-        elif GPIO.input(buttons.get('candy_only')) = False:
+        elif GPIO.input(buttons.get('candy_only')) == False:
             candy_tube_only = 1
-        elif GPIO.input(buttons.get('candy_only')) = True:
+        elif GPIO.input(buttons.get('candy_only')) == True:
             candy_tube_only = 0
 
 
