@@ -32,12 +32,12 @@ import sys
 def setup_channels():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(doors.get('door1'), GPIO.IN, GPIO.PUD_UP)
-    GPIO.setup(doors.get('door2'), GPIO.IN)
-    GPIO.setup(doors.get('door3'), GPIO.IN)
-    GPIO.setup(doors.get('door4'), GPIO.IN)
-    GPIO.setup(doors.get('door5'), GPIO.IN)
-    GPIO.setup(doors.get('door6'), GPIO.IN)
+    GPIO.setup(doors.get('door1'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(doors.get('door2'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(doors.get('door3'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(doors.get('door4'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(doors.get('door5'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(doors.get('door6'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
     GPIO.setup(tubes.get('tube1'), GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(tubes.get('tube2'), GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(tubes.get('tube3'), GPIO.OUT, initial=GPIO.HIGH)
@@ -117,18 +117,18 @@ def fire_water(w_cnt, c_cnt, w_tb, c_tb):
 def startup():
     print ("Setup Channels")
     setup_channels()
-    check_tube = 1
-    while check_tube < 7:
-        fire_tube(tubes.get("tube"+str(check_tube)))
-        check_tube += 1
-    check_spray = 1
-    while check_spray < 2:
-        spray_water(sprayers.get("spray"+str(check_spray)))
-        check_spray += 1
-    check_bell = 1
-    while check_bell < 2:
-        ring_bell(bells.get("bell"+str(check_bell)))
-        check_bell += 1
+#    check_tube = 1
+#    while check_tube < 7:
+#        fire_tube(tubes.get("tube"+str(check_tube)))
+#        check_tube += 1
+#    check_spray = 1
+#    while check_spray < 2:
+#        spray_water(sprayers.get("spray"+str(check_spray)))
+#        check_spray += 1
+#    check_bell = 1
+#    while check_bell < 2:
+#        ring_bell(bells.get("bell"+str(check_bell)))
+#        check_bell += 1
     return
 
 
@@ -162,8 +162,6 @@ startup()
 
 try:
 
-
-
     water, candy = randomize_tubes()
 
     print ("Water Tubes: %s" % water)
@@ -174,25 +172,27 @@ try:
     w_tube = 1
     c_tube = 1
 
+    print GPIO.input (doors.get('door1'))
+    print GPIO.input (doors.get('door2'))
+    print GPIO.input (doors.get('door3'))
+    print GPIO.input (doors.get('door4'))
+    print GPIO.input (doors.get('door5'))
+    print GPIO.input (doors.get('door6'))
+
     while True:
 
         n = int(input("\n\n1,2,3,4,5,6?: "))
-        if n == 1:
+        if n == 1 or GPIO.input(doors.get('door1')) == False:
             if 1 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 1 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif GPIO.input(14) == False:
-            if 1 in candy:
-                w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
-            elif 1 in water:
-                w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 2:
+        elif n == 2 or GPIO.input(doors.get('door2')) == False:
             if 2 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 2 in water:
                 w_count, c_count, w_tube, c_tube = fire_water(w_count, c_count, w_tube, c_tube)
-        elif n == 3:
+        elif n == 3 or GPIO.input(7) == False:
             if 3 in candy:
                 w_count, c_count, w_tube, c_tube = fire_candy(w_count, c_count, w_tube, c_tube)
             elif 3 in water:
