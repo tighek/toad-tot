@@ -2,25 +2,26 @@
 #
 # Trunk or Treat Automation
 # Copyright 2015 Tighe Kuykendall
+# All rights reserved under the Apache 2.0 License
 #
-# We are going to automate a bean bag toss game so that:
-#  - It has 6 doors.
-#  - Doors will be randomized so that 3 doors shoot candy and 3 doors shoot water.
-#  - If 2 water doors are opened the next door will be candy.
+# See http://github.com/tighek/toad-tot
 #
-# There is a web interface for:
-#  - Reseting the sensors for a new person
-#  - Making all doors shoot candy for the little kids.
-#  - Making all doors shoot water for kids that keep coming back.
-#  - Lock-out to stop all candy and water activities.
 #
-# This toad house originally debuted at the Pinewood Preparatory School Trunk or Treat
-# in 2014.  That version had 2 doors which where wired directly to the candy cannons.
-# It was a pretty simple game and the kids learned which doors would fire candy.  Some
-# of the older kids also learned that if they stood in the right spot they could catch
-# candy from the smaller kids which had to stand closer to the game.
+#  Version 1.1
+#  - 
 #
-# We are back in 2015 with this new and improved version!
+#  Version 1.0
+#  - All 6 doors create an action
+#  - Doors will be randomized so that 4 doors deliver candy and 2 doors deliver water.
+#  - If 2 water doors are opened consecutively the next door will be candy.
+#  - If 2 candy doors are opened consecutively the next door will be water.
+#  - When the 6th candy tube is used, ring a bell so we know to reload.
+#  - There are 3 switches concealed beside the automation gear:
+#    + Switch #1 resets the counters, randomizes the doors, and effectively starts the
+#      game for a new player.
+#    + Switch #2 sets all doors to dispense candy.  This is for the little kids.
+#    + Switch #3 sets all doors to dispense water.  This is for the older kids that
+#      coming back for candy...
 #
 
 import RPi.GPIO as GPIO
@@ -293,10 +294,3 @@ except Exception, err:
 
 #except ValueError:
 #    print('Sample size exceeded population size.')
-
-
-
-
-
-
-
