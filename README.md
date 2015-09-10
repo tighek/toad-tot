@@ -16,14 +16,26 @@ with a Raspberry Pi.  The improved (upgraded from 2 tubes to 6 tubes) candy cann
 wired to a relay strip controlled by the RPi.  All of the doors are wired to RPi GPIO
 pins.
 
-Here are the features of the automated version:
+
+Future features:
+  - Play a sound effect for each type of door.
+  - Web interface for:
+    + Handling the functions of the 3 mechanical switches.
+    + Provide a live camera feed looking at the person playing.
+    + Lock-out to stop all candy and water activities.
+
+
+Features in v1.1
+  - Add length of dictionary for easier reconfig for number of tubes or doors.
+
+
+Features in v1.0:
 
   - All 6 doors create an action
   - Doors will be randomized so that 4 doors deliver candy and 2 doors deliver water.
   - If 2 water doors are opened consecutively the next door will be candy.
   - If 2 candy doors are opened consecutively the next door will be water.
   - When the 6th candy tube is used, ring a bell so we know to reload.
-  - Play a sound effect for each type of door.
   - There are 3 switches concealed beside the automation gear:
     + Switch #1 resets the counters, randomizes the doors, and effectively starts the
       game for a new player.
@@ -31,9 +43,4 @@ Here are the features of the automated version:
     + Switch #3 sets all doors to dispense water.  This is for the older kids that
       coming back for candy...
  
-Stretch goal is a web interface for:
-  - Handling the functions of the 3 mechanical switches.
-  - Provide a live camera feed looking at the person playing.
-  - Lock-out to stop all candy and water activities.
 
-Until next year...
