@@ -1,0 +1,3 @@
+# config.py
+SERVER_IP="172.16.10.10"
+PORT=30303
