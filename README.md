@@ -25,6 +25,10 @@ Future features:
     + Lock-out to stop all candy and water activities.
 
 
+Features in v2.0
+  - Add command line arguments for local, sensor, and action.
+  
+
 Features in v1.1
   - Add length of dictionary for easier reconfig for number of tubes or doors.
 
