@@ -32,6 +32,12 @@ import optparse
 # import os
 import config as cfg
 
+import socket
+import select
+import Queue
+from threading import Thread
+
+
 
 def setup_channels():
     GPIO.setmode(GPIO.BCM)
@@ -249,6 +255,77 @@ def sensomatic(w_count, c_count, w_tube, c_tube):
     return w_count, c_count, w_tube, c_tube
 
 
+class ProcessThread(Thread):
+    def __init__(self):
+        super(ProcessThread, self).__init__()
+        self.running = True
+        self.q = Queue.Queue()
+
+    def add(self, data):
+        self.q.put(data)
+
+    def stop(self):
+        self.running = False
+
+    def run(self):
+        q = self.q
+        while self.running:
+            try:
+                # block for 1 second only:
+                value = q.get(block=True, timeout=.5)
+                action_server_process(value)
+            except Queue.Empty:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+        #
+        if not q.empty():
+            print "Elements left in the queue:"
+            while not q.empty():
+                print q.get()
+
+
+def action_server():
+    s = socket.socket()
+    host = cfg.ACTION_IP
+    port = cfg.ACTION_PORT
+    s.bind((host, port))
+    print "Listening on port {h} {p}...".format(h=host, p=port)
+
+    s.listen(5)
+    while True:
+        try:
+            client, addr = s.accept()
+            ready = select.select([client,],[], [],2)
+            if ready[0]:
+                data = client.recv(4096)
+                #print data
+                action_server_process_thread.add(data)
+        except KeyboardInterrupt:
+            print
+            print "Stop."
+            break
+        except socket.error, msg:
+            print "Socket error! %s" % msg
+            break
+    #
+    action_server_cleanup()
+
+def action_server_cleanup():
+    action_server_process_thread.stop()
+    action_server_process_thread.join()
+
+
+def action_server_process(value):
+    """
+    Implement this. Do something useful with the received data.
+    """
+    print value
+    if value == "tube1":
+        print (value)
+        water_count, candy_count, water_tube, candy_tube = fire_candy(water_count, candy_count, water_tube, candy_tube)
+    sleep(.4)
+
+
 global num_tubes
 num_tubes = len(cfg.tubes)
 global num_doors
@@ -263,6 +340,15 @@ global water_spray_only
 water_spray_only = 0
 global candy_tube_only
 candy_tube_only = 0
+
+global water_count
+water_count = 0
+global candy_count
+candy_count = 0
+global water_tube
+water_tube = 1
+global candy_tube
+candy_tube = 1
 
 #
 # Startup and initialize everything.
@@ -281,6 +367,9 @@ if __name__ == "__main__":
         parser.add_option('-a', '--action', action="store_const", const="action", dest="run_mode")
         (options, args) = parser.parse_args()
 
+        action_server_process_thread = ProcessThread()
+        action_server_process_thread.start()
+
         if options.run_mode == "local" or not options.run_mode:
 
             print ("Running in mode: " + options.run_mode)
@@ -290,17 +379,16 @@ if __name__ == "__main__":
             print ("Water Tubes: %s" % water)
             print ("Candy Tubes: %s" % candy)
 
-            water_count = 0
-            candy_count = 0
-            water_tube = 1
-            candy_tube = 1
-
             water_count, candy_count, water_tube, candy_tube = sensomatic(water_count, candy_count, water_tube, candy_tube)
 
         elif options.run_mode == "sensor":
             print ("Running in mode: " + options.run_mode)
+
+
         elif options.run_mode == "action":
             print ("Running in mode: " + options.run_mode)
+            action_server()
+
         else:
             print ("Whoops, something went wrong!")
 
