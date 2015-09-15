@@ -31,12 +31,10 @@ import sys
 import optparse
 # import os
 import config as cfg
-
 import socket
 import select
 import Queue
 from threading import Thread
-
 
 
 def setup_channels():
@@ -63,23 +61,35 @@ def setup_channels():
 
 
 def ring_bell(bell_num):
-    GPIO.output(bell_num, 0)
-    time.sleep(1)
-    GPIO.output(bell_num, 1)
+    if run_mode == "local"or run_mode == "action":
+        print ("Mode: " + run_mode + " Ring Bell %s" % bell_num)
+        GPIO.output(bell_num, 0)
+        time.sleep(1)
+        GPIO.output(bell_num, 1)
+    elif run_mode == "sensor":
+        print ("Mode: " + run_mode + "Ring Bell %s" % bell_num)
     return
 
 
 def fire_tube(tb):
-    GPIO.output(tb, 0)
-    time.sleep(.5)
-    GPIO.output(tb, 1)
+    if run_mode == "local" or run_mode == "action":
+        print ("Mode: " + run_mode + " Fire Candy %s" % tb)
+        GPIO.output(tb, 0)
+        time.sleep(.5)
+        GPIO.output(tb, 1)
+    elif run_mode == "sensor":
+        print ("Mode: " + run_mode + "Fire Candy %s" % tb)
     return
 
 
 def spray_water(tb):
-    GPIO.output(tb, 0)
-    time.sleep(.5)
-    GPIO.output(tb, 1)
+    if run_mode == "local" or run_mode == "action":
+        print ("Mode: " + run_mode + "Fire Water %s" % tb)
+        GPIO.output(tb, 0)
+        time.sleep(.5)
+        GPIO.output(tb, 1)
+    elif run_mode == "sensor":
+        print ("Mode: " + run_mode + "Fire Water %s" % tb)
     return
 
 
@@ -316,13 +326,17 @@ def action_server_cleanup():
 
 
 def action_server_process(value):
-    """
-    Implement this. Do something useful with the received data.
-    """
+
     print value
-    if value == "tube1":
+    if value in cfg.tubes:
         print (value)
         water_count, candy_count, water_tube, candy_tube = fire_candy(water_count, candy_count, water_tube, candy_tube)
+    elif value in cfg.sprayers:
+        print (value)
+        water_count, candy_count, water_tube, candy_tube = fire_water(water_count, candy_count, water_tube, candy_tube)
+    elif value in cfg.bells:
+        print (value)
+        ring_bell(cfg.bells.get('bell1'))
     sleep(.4)
 
 
@@ -350,6 +364,9 @@ water_tube = 1
 global candy_tube
 candy_tube = 1
 
+global run_mode
+run_mode = "local"
+
 #
 # Startup and initialize everything.
 #
@@ -366,9 +383,6 @@ if __name__ == "__main__":
         parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode")
         parser.add_option('-a', '--action', action="store_const", const="action", dest="run_mode")
         (options, args) = parser.parse_args()
-
-        action_server_process_thread = ProcessThread()
-        action_server_process_thread.start()
 
         if options.run_mode == "local" or not options.run_mode:
 
@@ -387,6 +401,8 @@ if __name__ == "__main__":
 
         elif options.run_mode == "action":
             print ("Running in mode: " + options.run_mode)
+            action_server_process_thread = ProcessThread()
+            action_server_process_thread.start()
             action_server()
 
         else:

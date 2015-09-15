@@ -2,11 +2,18 @@
 #
 # Configuration file for Toad Trunk-or-Treat
 #
-
+#
+# If running in Local mode, the following ACTION items are ignored.  If running
+# in Action or Sensor mode, set the following:
+#
+#   ACTION_IP is the IP address of the RPi controlling actions.
+#   ACTION_PORT is the TCP port the Action server will listen on.
+#
 
 ACTION_IP="172.16.10.14"
 ACTION_PORT=30303
-SENSOR_IP="172.16.10.16"
+
+#SENSOR_IP="172.16.10.16"
 
 #
 # Define the RPi board channels for the inputs and outputs.
