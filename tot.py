@@ -103,6 +103,9 @@ def randomize_tubes():
     rand_candy = list(range(1, 7))
     rand_candy.remove(w1)
     rand_candy.remove(w2)
+    print ("Water Tubes: %s" % rand_water)
+    print ("Candy Tubes: %s" % rand_candy)
+    time.sleep(1)
     return rand_water, rand_candy
 
 
@@ -112,7 +115,6 @@ def fire_candy():
     global candy_count
     global water_count
     if candy_tube_only == 1 and candy_tube < num_tubes:
-        print ("candy tube only and less than num")
         tot_candy_metrics = open('tot_candy_metrics', 'a')
         tot_candy_metrics.write('1')
         tot_candy_metrics.close()
@@ -120,7 +122,6 @@ def fire_candy():
         fire_tube(cfg.tubes.get("tube"+str(candy_tube)))
         candy_tube += 1
     elif candy_tube_only == 1 and candy_tube == num_tubes:
-        print ("candy tube only and equal num")
         tot_candy_metrics = open('tot_candy_metrics', 'a')
         tot_candy_metrics.write('1')
         tot_candy_metrics.close()
@@ -128,8 +129,7 @@ def fire_candy():
         fire_tube(cfg.tubes.get("tube"+str(candy_tube)))
         ring_bell(cfg.bells.get('bell1'))
         candy_tube = 1
-    if 1 <= candy_tube <= num_tubes-1 and candy_count < 2:
-        print ("candy tube")
+    elif 1 <= candy_tube <= num_tubes-1 and candy_count < 2:
         tot_candy_metrics = open('tot_candy_metrics', 'a')
         tot_candy_metrics.write('1')
         tot_candy_metrics.close()
@@ -137,7 +137,6 @@ def fire_candy():
         fire_tube(cfg.tubes.get("tube"+str(candy_tube)))
         candy_tube += 1
     elif candy_tube == num_tubes and candy_count < 2:
-        print ("candy tube equal")
         tot_candy_metrics = open('tot_candy_metrics', 'a')
         tot_candy_metrics.write('1')
         tot_candy_metrics.close()
@@ -149,6 +148,7 @@ def fire_candy():
     else:
         candy_count = 0
         fire_water()
+    time.sleep(.3)
     return
 
 
@@ -172,6 +172,7 @@ def fire_water():
     else:
         water_count = 0
         fire_candy()
+    time.sleep(.3)
     return
 
 
@@ -214,20 +215,21 @@ def sensomatic():
             if lockout_timer == 0:
                 ring_bell(cfg.bells.get('bell1'))
                 lockout_timer += 1
-                time.sleep(1)
-            elif lockout_timer == 10:
+                time.sleep(.5)
+            elif lockout_timer == 20:
                 lockout_timer = 0
-                time.sleep(1)
+                time.sleep(.5)
             else:
                 lockout_timer += 1
-                time.sleep(1)
-        elif GPIO.input(cfg.buttons.get('water_only')) == False:
+                time.sleep(.5)
+
+        if GPIO.input(cfg.buttons.get('water_only')) == False:
             water_spray_only = 1
         elif GPIO.input(cfg.buttons.get('water_only')) == True:
             water_spray_only = 0
-        elif GPIO.input(cfg.buttons.get('candy_only')) == False:
+
+        if GPIO.input(cfg.buttons.get('candy_only')) == False:
             candy_tube_only = 1
-            print (candy_tube_only)
         elif GPIO.input(cfg.buttons.get('candy_only')) == True:
             candy_tube_only = 0
 
@@ -409,9 +411,6 @@ try:
     if options.run_mode == "local" or not options.run_mode:
         print ("Running in mode: " + options.run_mode)
         water, candy = randomize_tubes()
-        print ("Water Tubes: %s" % water)
-        print ("Candy Tubes: %s" % candy)
-
         sensomatic()
 
     elif options.run_mode == "sensor":
