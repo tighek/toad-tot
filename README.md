@@ -27,7 +27,10 @@ Future features:
 
 Features in v2.0
   - Add command line arguments for local, sensor, and action.
-  
+  - Simplified function calls by moving some items to global variables.
+  - Added re-randomize of tubes to counter reset.
+  - Buttons for Reset and Water Only work.
+  - Lockout feature works where both water only and candy only buttons are pressed.
 
 Features in v1.1
   - Add length of dictionary for easier reconfig for number of tubes or doors.
