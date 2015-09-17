@@ -60,15 +60,24 @@ def setup_channels():
     return
 
 
+def sensor_send(item):
+    sensor_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sensor_client.connect((cfg.ACTION_IP, cfg.ACTION_PORT))
+    sensor_client.send(item)
+    sensor_client.shutdown(socket.SHUT_RDWR)
+    sensor_client.close()
+
+
 def ring_bell(bell_num):
     global run_mode
-    if run_mode == "local"or run_mode == "action":
+    if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + " Ring Bell %s" % bell_num)
         GPIO.output(bell_num, 0)
         time.sleep(1)
         GPIO.output(bell_num, 1)
     elif run_mode == "sensor":
         print ("Mode: " + run_mode + "Ring Bell %s" % bell_num)
+        sensor_send()
     return
 
 
