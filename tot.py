@@ -70,7 +70,7 @@ def sensor_send(item):
     sensor_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sensor_client.connect((cfg.ACTION_IP, cfg.ACTION_PORT))
     sensor_client.send(item)
-    sensor_client.shutdown(socket.SHUT_RDWR)
+#    sensor_client.shutdown(socket.SHUT_RDWR)
     sensor_client.close()
     return
 
@@ -317,59 +317,64 @@ def sensomatic():
     return
 
 
-class ProcessThread(Thread):
-    def __init__(self):
-        super(ProcessThread, self).__init__()
-        self.running = True
-        self.q = Queue.Queue()
-
-    def add(self, data):
-        self.q.put(data)
-
-    def stop(self):
-        self.running = False
-
-    def run(self):
-        q = self.q
-        while self.running:
-            try:
-                # block for 1 second only:
-                value = q.get(block=True, timeout=.5)
-                action_server_process(value)
-            except Queue.Empty:
-                sys.stdout.write('.')
-                sys.stdout.flush()
-
-        if not q.empty():
-            print "Elements left in the queue:"
-            while not q.empty():
-                print q.get()
+#class ProcessThread(Thread):
+#    def __init__(self):
+#        super(ProcessThread, self).__init__()
+#        self.running = True
+#        self.q = Queue.Queue()
+#
+#    def add(self, data):
+#        self.q.put(data)
+#
+#    def stop(self):
+#        self.running = False
+#
+#    def run(self):
+#        q = self.q
+#        while self.running:
+#            try:
+#                # block for 1 second only:
+#                value = q.get(block=True, timeout=.5)
+#                action_server_process(value)
+#            except Queue.Empty:
+#                sys.stdout.write('.')
+#                sys.stdout.flush()
+#
+#        if not q.empty():
+#            print "Elements left in the queue:"
+#            while not q.empty():
+#                print q.get()
 
 
 def action_server():
-    s = socket.socket()
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = cfg.ACTION_IP
     port = cfg.ACTION_PORT
     s.bind((host, port))
     print "Listening on port {h} {p}...".format(h=host, p=port)
 
-    s.listen(5)
+    s.listen(1)
+    client, addr = s.accept()
     while True:
-        try:
-            client, addr = s.accept()
-            ready = select.select([client, ], [], [], 2)
-            if ready[0]:
-                data = client.recv(4096)
-                action_server_process_thread.add(data)
-        except KeyboardInterrupt:
-            print
-            print "Stop."
-            break
-        except socket.error, msg:
-            print "Socket error! %s" % msg
-            break
+        data = client.recv(20)
+        print (data)
+        action_server_process(data)
+    client.close()
 
-    action_server_cleanup()
+#        try:
+#            client, addr = s.accept()
+#            ready = select.select([client, ], [], [], 2)
+#            if ready[0]:
+#                data = client.recv(4096)
+#                action_server_process_thread.add(data)
+#        except KeyboardInterrupt:
+#            print
+#            print "Stop."
+#            break
+#        except socket.error, msg:
+#            print "Socket error! %s" % msg
+#            break
+#    action_server_cleanup()
     return
 
 
@@ -453,8 +458,8 @@ try:
 
     elif run_mode == "action":
         print ("Running in mode: " + options.run_mode)
-        action_server_process_thread = ProcessThread()
-        action_server_process_thread.start()
+#        action_server_process_thread = ProcessThread()
+#        action_server_process_thread.start()
         action_server()
 
     else:
