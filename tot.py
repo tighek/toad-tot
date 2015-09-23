@@ -183,25 +183,32 @@ def reset_counters():
     return
 
 
+def test_action():
+    if cfg.tubes:
+        for tube_name, tube_value in cfg.tubes.iteritems():
+            fire_tube(tube_name)
+    if cfg.sprayers:
+        for sprayer_name, sprayer_value in cfg.sprayers.iteritems():
+            spray_water(sprayer_name)
+    if cfg.bells:
+        for bell_name, bell_value in cfg.bells.iteritems():
+            ring_bell(bell_name)
+    return
+
+
 def startup():
     global run_mode
-    if run_mode == "local" or run_mode == "action":
-        print ("Setup Action")
+    if run_mode == "local":
+        print ("Setup Local Mode")
+        setup_sensor()
         setup_action()
-        check_tube = 1
-        while check_tube < num_tubes+1:
-            fire_tube("tube"+str(check_tube))
-            check_tube += 1
-        check_spray = 1
-        while check_spray < num_sprayers+1:
-            spray_water("spray"+str(check_spray))
-            check_spray += 1
-        check_bell = 1
-        while check_bell < num_bells+1:
-            ring_bell("bell"+str(check_bell))
-            check_bell += 1
+        test_action()
+    elif run_mode == "action":
+        print ("Setup Action Mode")
+        setup_action()
+        test_action()
     elif run_mode == "sensor":
-        print ("Setup Sensor")
+        print ("Setup Sensor Mode")
         setup_sensor()
     return
 
@@ -210,6 +217,8 @@ def sensomatic():
     global water_spray_only
     global candy_tube_only
     global water_count
+    global water
+    global candy
     lockout_timer = 0
     while True:
         if GPIO.input(cfg.buttons.get('water_only')) == False and GPIO.input(cfg.buttons.get('candy_only')) == False:
@@ -290,8 +299,6 @@ def sensomatic():
             time.sleep(.3)
         elif GPIO.input(cfg.buttons.get('reset')) == False:
             reset_counters()
-            global water
-            global candy
             water, candy = randomize_tubes()
     return
 
@@ -363,9 +370,9 @@ if __name__ == "__main__":
     try:
 
         parser = optparse.OptionParser()
-        parser.add_option('-l', '--local', action="store_const", const="local", dest="run_mode", default="local")
-        parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode")
-        parser.add_option('-a', '--action', action="store_const", const="action", dest="run_mode")
+        parser.add_option('-l', '--local', action="store_const", const="local", dest="run_mode", default="local", help="Run in Local Mode")
+        parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode", help="Run in Sensor Mode")
+        parser.add_option('-a', '--action', action="store_const", const="action", dest="run_mode", help="Run in Action Mode")
         (options, args) = parser.parse_args()
         if options.run_mode:
             run_mode = options.run_mode
