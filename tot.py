@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 #
 # Trunk or Treat Automation
 # Copyright 2015 Tighe Kuykendall
@@ -6,63 +6,41 @@
 #
 # See http://github.com/tighek/toad-tot
 #
-#
-#  Version 1.1
-#  - 
-#
-#  Version 1.0
-#  - All 6 doors create an action
-#  - Doors will be randomized so that 4 doors deliver candy and 2 doors deliver water.
-#  - If 2 water doors are opened consecutively the next door will be candy.
-#  - If 2 candy doors are opened consecutively the next door will be water.
-#  - When the 6th candy tube is used, ring a bell so we know to reload.
-#  - There are 3 switches concealed beside the automation gear:
-#    + Switch #1 resets the counters, randomizes the doors, and effectively starts the
-#      game for a new player.
-#    + Switch #2 sets all doors to dispense candy.  This is for the little kids.
-#    + Switch #3 sets all doors to dispense water.  This is for the older kids that
-#      coming back for candy...
-#
 
 import RPi.GPIO as GPIO
 import time
 import random
 import sys
 import optparse
-# import os
 import config as cfg
 import socket
 import select
-import Queue
-from threading import Thread
 
 
 def setup_action():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(cfg.tubes.get('tube1'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.tubes.get('tube2'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.tubes.get('tube3'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.tubes.get('tube4'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.tubes.get('tube5'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.tubes.get('tube6'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.sprayers.get('spray1'), GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(cfg.bells.get('bell1'), GPIO.OUT, initial=GPIO.HIGH)
+    if cfg.tubes:
+        for tube_name, tube_value in cfg.tubes.iteritems():
+            GPIO.setup(tube_value, GPIO.OUT, initial=GPIO.HIGH)
+    if cfg.sprayers:
+        for sprayer_name, sprayer_value in cfg.sprayers.iteritems():
+            GPIO.setup(sprayer_value, GPIO.OUT, initial=GPIO.HIGH)
+    if cfg.bells:
+        for bell_name, bell_value in cfg.bells.iteritems():
+            GPIO.setup(bell_value, GPIO.OUT, initial=GPIO.HIGH)
     return
 
 
 def setup_sensor():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(cfg.doors.get('door1'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.doors.get('door2'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.doors.get('door3'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.doors.get('door4'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.doors.get('door5'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.doors.get('door6'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.buttons.get('reset'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.buttons.get('candy_only'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.setup(cfg.buttons.get('water_only'), GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    if cfg.doors:
+        for door_name, door_value in cfg.doors.iteritems():
+            GPIO.setup(door_value, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    if cfg.buttons:
+        for button_name, button_value in cfg.buttons.iteritems():
+            GPIO.setup(button_value, GPIO.IN, pull_up_down = GPIO.PUD_UP)
     return
 
 
@@ -70,9 +48,9 @@ def sensor_send(item):
     sensor_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sensor_client.connect((cfg.ACTION_IP, cfg.ACTION_PORT))
     sensor_client.send(item)
-#    sensor_client.shutdown(socket.SHUT_RDWR)
     sensor_client.close()
     return
+
 
 def ring_bell(b):
     global run_mode
@@ -231,11 +209,12 @@ def startup():
 def sensomatic():
     global water_spray_only
     global candy_tube_only
+    global water_count
     lockout_timer = 0
     while True:
         if GPIO.input(cfg.buttons.get('water_only')) == False and GPIO.input(cfg.buttons.get('candy_only')) == False:
             if lockout_timer == 0:
-                ring_bell(cfg.bells.get('bell1'))
+                ring_bell("bell1")
                 lockout_timer += 1
                 time.sleep(.5)
             elif lockout_timer == 20:
@@ -266,7 +245,7 @@ def sensomatic():
             time.sleep(.3)
         elif GPIO.input(cfg.doors.get('door2')) == False:
             if water_spray_only == 1:
-                w_cnt = 0
+                water_count = 0
                 fire_water()
             elif candy_tube_only == 1 or 2 in candy:
                 fire_candy()
@@ -275,7 +254,7 @@ def sensomatic():
             time.sleep(.3)
         elif GPIO.input(cfg.doors.get('door3')) == False:
             if water_spray_only == 1:
-                w_cnt = 0
+                water_count = 0
                 fire_water()
             elif candy_tube_only == 1 or 3 in candy:
                 fire_candy()
@@ -284,7 +263,7 @@ def sensomatic():
             time.sleep(.3)
         elif GPIO.input(cfg.doors.get('door4')) == False:
             if water_spray_only == 1:
-                w_cnt = 0
+                water_count = 0
                 fire_water()
             elif candy_tube_only == 1 or 4 in candy:
                 fire_candy()
@@ -293,7 +272,7 @@ def sensomatic():
             time.sleep(.3)
         elif GPIO.input(cfg.doors.get('door5')) == False:
             if water_spray_only == 1:
-                w_cnt = 0
+                water_count = 0
                 fire_water()
             elif candy_tube_only == 1 or 5 in candy:
                 fire_candy()
@@ -302,7 +281,7 @@ def sensomatic():
             time.sleep(.3)
         elif GPIO.input(cfg.doors.get('door6')) == False:
             if water_spray_only == 1:
-                w_cnt = 0
+                water_count = 0
                 fire_water()
             elif candy_tube_only == 1 or 6 in candy:
                 fire_candy()
@@ -354,70 +333,65 @@ def action_server_process(value):
         ring_bell(value)
     return
 
+if __name__ == "__main__":
+    global num_tubes
+    num_tubes = len(cfg.tubes)
+    global num_doors
+    num_doors = len(cfg.doors)
+    global num_sprayers
+    num_sprayers = len(cfg.sprayers)
+    global num_bells
+    num_bells = len(cfg.bells)
+    global num_buttons
+    num_buttons = len(cfg.buttons)
+    global water_spray_only
+    water_spray_only = 0
+    global candy_tube_only
+    candy_tube_only = 0
+    global water_count
+    water_count = 0
+    global candy_count
+    candy_count = 0
+    global water_tube
+    water_tube = 1
+    global candy_tube
+    candy_tube = 1
+    global run_mode
+    run_mode = "local"
 
-global num_tubes
-global num_doors
-global num_sprayers
-global num_bells
-global num_buttons
-global water_spray_only
-global candy_tube_only
-global water_count
-global candy_count
-global water_tube
-global candy_tube
-global run_mode
 
-num_tubes = len(cfg.tubes)
-num_doors = len(cfg.doors)
-num_sprayers = len(cfg.sprayers)
-num_bells = len(cfg.bells)
-num_buttons = len(cfg.buttons)
-water_spray_only = 0
-candy_tube_only = 0
-water_count = 0
-candy_count = 0
-water_tube = 1
-candy_tube = 1
-run_mode = "local"
+    try:
 
+        parser = optparse.OptionParser()
+        parser.add_option('-l', '--local', action="store_const", const="local", dest="run_mode", default="local")
+        parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode")
+        parser.add_option('-a', '--action', action="store_const", const="action", dest="run_mode")
+        (options, args) = parser.parse_args()
+        if options.run_mode:
+            run_mode = options.run_mode
 
-#
-# Startup and initialize everything.
-#
+        print ("Startup Routine")
+        startup()
 
-try:
+        if run_mode == "local" or not run_mode:
+            print ("Running in mode: " + options.run_mode)
+            water, candy = randomize_tubes()
+            sensomatic()
+        elif run_mode == "sensor":
+            print ("Running in mode: " + options.run_mode)
+            water, candy = randomize_tubes()
+            sensomatic()
+        elif run_mode == "action":
+            print ("Running in mode: " + options.run_mode)
+            action_server()
+        else:
+            print ("Whoops, something went wrong!")
 
-    parser = optparse.OptionParser()
-    parser.add_option('-l', '--local', action="store_const", const="local", dest="run_mode", default="local")
-    parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode")
-    parser.add_option('-a', '--action', action="store_const", const="action", dest="run_mode")
-    (options, args) = parser.parse_args()
-    if options.run_mode:
-        run_mode = options.run_mode
-
-    print ("Startup Routine")
-    startup()
-
-    if run_mode == "local" or not run_mode:
-        print ("Running in mode: " + options.run_mode)
-        water, candy = randomize_tubes()
-        sensomatic()
-    elif run_mode == "sensor":
-        print ("Running in mode: " + options.run_mode)
-        water, candy = randomize_tubes()
-        sensomatic()
-    elif run_mode == "action":
-        print ("Running in mode: " + options.run_mode)
-        action_server()
-    else:
-        print ("Whoops, something went wrong!")
-
-except Exception, err:
-    print "Exception:", str(err)
-    import traceback, sys
-    print '-'*60
-    traceback.print_exc(file=sys.stdout)
-    print '-'*60
+    except Exception, err:
+        print "Exception:", str(err)
+        import traceback, sys
+        print '-'*60
+        traceback.print_exc(file=sys.stdout)
+        print '-'*60
 
 # End

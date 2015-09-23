@@ -13,7 +13,6 @@
 ACTION_IP="172.16.10.14"
 ACTION_PORT=30303
 
-#SENSOR_IP="172.16.10.16"
 
 #
 # Define the RPi board channels for the inputs and outputs.

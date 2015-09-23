@@ -35,7 +35,6 @@ Features in v2.0
 Features in v1.1
   - Add length of dictionary for easier reconfig for number of tubes or doors.
 
-
 Features in v1.0:
 
   - All 6 doors create an action
