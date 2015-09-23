@@ -26,7 +26,8 @@ Future features:
 
 
 Features in v2.0
-  - Add command line arguments for local, sensor, and action.
+  - Add command line arguments for Local, Sensor, and Action.
+  - No command line argument runs in Local Mode.
   - Simplified function calls by moving some items to global variables.
   - Added re-randomize of tubes to counter reset.
   - Buttons for Reset and Water Only work.
