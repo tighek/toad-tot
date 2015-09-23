@@ -37,22 +37,20 @@ class ProcessThread(Thread):
             while not q.empty():
                 print q.get()
 
-t = ProcessThread()
-t.start()
 
 def process(value):
     """
     Implement this. Do something useful with the received data.
     """
     print value
-    print cfg.PORT
-    print cfg.SERVER_IP
+    print cfg.ACTION_IP
+    print cfg.ACTION_PORT
     sleep(.4)
 
 def main():
     s = socket.socket()         # Create a socket object
-    host = socket.gethostname() # Get local machine name
-    port = cfg.PORT                # Reserve a port for your service.
+    host = cfg.ACTION_IP        # Get local machine name
+    port = cfg.ACTION_PORT      # Reserve a port for your service.
     s.bind((host, port))        # Bind to the port
     print "Listening on port {p}...".format(p=port)
 
@@ -80,6 +78,10 @@ def cleanup():
     t.join()
 
 #########################################################
+
+t = ProcessThread()
+t.start()
+
 
 if __name__ == "__main__":
     main()
