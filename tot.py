@@ -317,85 +317,41 @@ def sensomatic():
     return
 
 
-#class ProcessThread(Thread):
-#    def __init__(self):
-#        super(ProcessThread, self).__init__()
-#        self.running = True
-#        self.q = Queue.Queue()
-#
-#    def add(self, data):
-#        self.q.put(data)
-#
-#    def stop(self):
-#        self.running = False
-#
-#    def run(self):
-#        q = self.q
-#        while self.running:
-#            try:
-#                # block for 1 second only:
-#                value = q.get(block=True, timeout=.5)
-#                action_server_process(value)
-#            except Queue.Empty:
-#                sys.stdout.write('.')
-#                sys.stdout.flush()
-#
-#        if not q.empty():
-#            print "Elements left in the queue:"
-#            while not q.empty():
-#                print q.get()
-
-
 def action_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = cfg.ACTION_IP
-    port = cfg.ACTION_PORT
-    s.bind((host, port))
-    print "Listening on port {h} {p}...".format(h=host, p=port)
+    s.bind((cfg.ACTION_IP, cfg.ACTION_PORT))
+    print "Listening on port {h} {p}...".format(h=cfg.ACTION_IP, p=cfg.ACTION_PORT)
+    s.listen(5)
 
-    s.listen(1)
-    client, addr = s.accept()
     while True:
-        data = client.recv(20)
-        print (data)
-        action_server_process(data)
+        try:
+            client, addr = s.accept()
+            ready = select.select([client, ], [], [], 1)
+            if ready[0]:
+                data = client.recv(500)
+                action_server_process(data)
+            if not data:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+        except KeyboardInterrupt:
+            print
+            print "Stop."
+            break
+        except socket.error, msg:
+            print "Socket error! %s" % msg
+            break
     client.close()
-
-#        try:
-#            client, addr = s.accept()
-#            ready = select.select([client, ], [], [], 2)
-#            if ready[0]:
-#                data = client.recv(4096)
-#                action_server_process_thread.add(data)
-#        except KeyboardInterrupt:
-#            print
-#            print "Stop."
-#            break
-#        except socket.error, msg:
-#            print "Socket error! %s" % msg
-#            break
-#    action_server_cleanup()
-    return
-
-
-def action_server_cleanup():
-    action_server_process_thread.stop()
-    action_server_process_thread.join()
+    print ("end of action server")
     return
 
 
 def action_server_process(value):
-    print value
     if value in cfg.tubes:
-        print (value)
-        fire_candy()
+        fire_tube(value)
     elif value in cfg.sprayers:
-        print (value)
-        fire_water()
+        spray_water(value)
     elif value in cfg.bells:
-        print (value)
-        ring_bell("bell1")
-#    time.sleep(.4)
+        ring_bell(value)
     return
 
 
@@ -432,9 +388,6 @@ run_mode = "local"
 
 try:
 
-#    print (water_tube)
-#    print (candy_tube)
-
     parser = optparse.OptionParser()
     parser.add_option('-l', '--local', action="store_const", const="local", dest="run_mode", default="local")
     parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode")
@@ -450,18 +403,13 @@ try:
         print ("Running in mode: " + options.run_mode)
         water, candy = randomize_tubes()
         sensomatic()
-
     elif run_mode == "sensor":
         print ("Running in mode: " + options.run_mode)
         water, candy = randomize_tubes()
         sensomatic()
-
     elif run_mode == "action":
         print ("Running in mode: " + options.run_mode)
-#        action_server_process_thread = ProcessThread()
-#        action_server_process_thread.start()
         action_server()
-
     else:
         print ("Whoops, something went wrong!")
 
