@@ -15,6 +15,7 @@ import optparse
 import config as cfg
 import socket
 import select
+import pygame
 
 
 def setup_action():
@@ -29,6 +30,7 @@ def setup_action():
     if cfg.bells:
         for bell_name, bell_value in cfg.bells.iteritems():
             GPIO.setup(bell_value, GPIO.OUT, initial=GPIO.HIGH)
+    pygame.mixer.init()
     return
 
 
@@ -56,6 +58,7 @@ def ring_bell(b):
     global run_mode
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + " Ring Bell %s" % b)
+        sound_play("reload")
         GPIO.output(cfg.bells.get(b), 0)
         time.sleep(1)
         GPIO.output(cfg.bells.get(b), 1)
@@ -69,6 +72,7 @@ def fire_tube(tb):
     global run_mode
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + " Fire Candy %s" % tb)
+        sound_play("success")
         GPIO.output(cfg.tubes.get(tb), 0)
         time.sleep(.5)
         GPIO.output(cfg.tubes.get(tb), 1)
@@ -82,12 +86,33 @@ def spray_water(tb):
     global run_mode
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + "Fire Water %s" % tb)
+        sound_play("fail")
         GPIO.output(cfg.sprayers.get(tb), 0)
         time.sleep(.5)
         GPIO.output(cfg.sprayers.get(tb), 1)
     elif run_mode == "sensor":
         print ("Mode: " + run_mode + "Fire Water %s" % tb)
         sensor_send(tb)
+    return
+
+
+def sound_pygame(sound):
+    pygame.mixer.music.load(sound)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy() == True:
+        continue
+    return
+
+
+def sound_play(type):
+    if type == "reset":
+        sound_pygame(cfg.SOUND_RESET)
+    elif type == "fail":
+        sound_pygame(cfg.SOUND_FAIL)
+    elif type == "success":
+        sound_pygame(cfg.SOUND_SUCCESS)
+    elif type == "reload":
+        sound_pygame(cfg.SOUND_RELOAD)
     return
 
 

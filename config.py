@@ -13,6 +13,10 @@
 ACTION_IP="172.16.10.14"
 ACTION_PORT=30303
 
+SOUND_RESET="sounds/reset.wav"
+SOUND_SUCCESS="sounds/success.wasv"
+SOUND_RELOAD="sounds/reload.wav"
+SOUND_FAIL="sounds/fail.wav"
 
 #
 # Define the RPi board channels for the inputs and outputs.
