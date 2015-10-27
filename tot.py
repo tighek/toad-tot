@@ -58,10 +58,10 @@ def ring_bell(b):
     global run_mode
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + " Ring Bell %s" % b)
-        sound_play("reload")
         GPIO.output(cfg.bells.get(b), 0)
         time.sleep(1)
         GPIO.output(cfg.bells.get(b), 1)
+        sound_play("reload")
     elif run_mode == "sensor":
         print ("Mode: " + run_mode + "Ring Bell %s" % b)
         sensor_send(b)
@@ -72,10 +72,10 @@ def fire_tube(tb):
     global run_mode
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + " Fire Candy %s" % tb)
-        sound_play("success")
         GPIO.output(cfg.tubes.get(tb), 0)
         time.sleep(.5)
         GPIO.output(cfg.tubes.get(tb), 1)
+        sound_play("success")
     elif run_mode == "sensor":
         print ("Mode: " + run_mode + "Fire Candy %s" % tb)
         sensor_send(tb)
@@ -86,10 +86,10 @@ def spray_water(tb):
     global run_mode
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + "Fire Water %s" % tb)
-        sound_play("fail")
         GPIO.output(cfg.sprayers.get(tb), 0)
         time.sleep(.5)
         GPIO.output(cfg.sprayers.get(tb), 1)
+        sound_play("fail")
     elif run_mode == "sensor":
         print ("Mode: " + run_mode + "Fire Water %s" % tb)
         sensor_send(tb)
@@ -331,7 +331,7 @@ def sensomatic():
 def action_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((cfg.ACTION_IP, cfg.ACTION_PORT))
-    print "Listening on port {h} {p}...".format(h=cfg.ACTION_IP, p=cfg.ACTION_PORT)
+    print ("Listening on port {h} {p}...".format(h=cfg.ACTION_IP, p=cfg.ACTION_PORT))
     s.listen(5)
 
     while True:
@@ -345,11 +345,11 @@ def action_server():
                 sys.stdout.write('.')
                 sys.stdout.flush()
         except KeyboardInterrupt:
-            print
-            print "Stop."
+            print ()
+            print ("Stop.")
             break
         except socket.error, msg:
-            print "Socket error! %s" % msg
+            print ("Socket error! %s" % msg)
             break
     client.close()
     print ("end of action server")
@@ -393,7 +393,6 @@ if __name__ == "__main__":
 
 
     try:
-
         parser = optparse.OptionParser()
         parser.add_option('-l', '--local', action="store_const", const="local", dest="run_mode", default="local", help="Run in Local Mode")
         parser.add_option('-s', '--sensor', action="store_const", const="sensor", dest="run_mode", help="Run in Sensor Mode")
@@ -420,10 +419,10 @@ if __name__ == "__main__":
             print ("Whoops, something went wrong!")
 
     except Exception, err:
-        print "Exception:", str(err)
+        print ("Exception:", str(err))
         import traceback, sys
-        print '-'*60
+        print ('-'*60)
         traceback.print_exc(file=sys.stdout)
-        print '-'*60
+        print ('-'*60)
 
 # End
