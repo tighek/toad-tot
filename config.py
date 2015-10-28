@@ -29,8 +29,7 @@ SOUND_FAIL="sounds/fail.wav"
 #
 
 tubes = {'tube1': 2, 'tube2': 3, 'tube3': 4, 'tube4': 17, 'tube5': 27, 'tube6': 22}
-doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 23, 'door5': 24, 'door6': 25}
+doors = {'door1': 14, 'door2': 15, 'door3': 18, 'door4': 23, 'door5': 24, 'door6': 25, 'door7': 8}
 sprayers = {'spray1': 10}
-bells = {'bell1': 9}
-buttons = {'reset': 8, 'water_only': 7, 'candy_only': 11}
+buttons = {'reset': 7, 'water_only': 9, 'candy_only': 11}
 

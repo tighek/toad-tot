@@ -27,9 +27,6 @@ def setup_action():
     if cfg.sprayers:
         for sprayer_name, sprayer_value in cfg.sprayers.iteritems():
             GPIO.setup(sprayer_value, GPIO.OUT, initial=GPIO.HIGH)
-    if cfg.bells:
-        for bell_name, bell_value in cfg.bells.iteritems():
-            GPIO.setup(bell_value, GPIO.OUT, initial=GPIO.HIGH)
     pygame.mixer.init()
     return
 
@@ -51,20 +48,6 @@ def sensor_send(item):
     sensor_client.connect((cfg.ACTION_IP, cfg.ACTION_PORT))
     sensor_client.send(item)
     sensor_client.close()
-    return
-
-
-def ring_bell(b):
-    global run_mode
-    if run_mode == "local" or run_mode == "action":
-        print ("Mode: " + run_mode + " Ring Bell %s" % b)
-        GPIO.output(cfg.bells.get(b), 0)
-        time.sleep(1)
-        GPIO.output(cfg.bells.get(b), 1)
-        sound_play("reload")
-    elif run_mode == "sensor":
-        print ("Mode: " + run_mode + "Ring Bell %s" % b)
-        sensor_send(b)
     return
 
 
@@ -117,10 +100,10 @@ def sound_play(type):
 
 
 def randomize_tubes():
-    rand_water = random.sample(range(1, 7), 2)
+    rand_water = random.sample(range(1, 8), 2)
     w1 = rand_water[0]
     w2 = rand_water[1]
-    rand_candy = list(range(1, 7))
+    rand_candy = list(range(1, 8))
     rand_candy.remove(w1)
     rand_candy.remove(w2)
     print ("Water Tubes: %s" % rand_water)
@@ -147,7 +130,7 @@ def fire_candy():
         tot_candy_metrics.close()
         candy_count = 0
         fire_tube("tube"+str(candy_tube))
-        ring_bell("bell1")
+        sound_play(reload)
         candy_tube = 1
     elif 1 <= candy_tube <= num_tubes-1 and candy_count < 2:
         tot_candy_metrics = open('tot_candy_metrics', 'a')
@@ -162,7 +145,7 @@ def fire_candy():
         tot_candy_metrics.close()
         candy_count += 1
         fire_tube("tube"+str(candy_tube))
-        ring_bell("bell1")
+        sound_play(reload)
         candy_tube = 1
         water_count = 0
     else:
@@ -215,9 +198,6 @@ def test_action():
     if cfg.sprayers:
         for sprayer_name, sprayer_value in cfg.sprayers.iteritems():
             spray_water(sprayer_name)
-    if cfg.bells:
-        for bell_name, bell_value in cfg.bells.iteritems():
-            ring_bell(bell_name)
     return
 
 
@@ -248,7 +228,7 @@ def sensomatic():
     while True:
         if GPIO.input(cfg.buttons.get('water_only')) == False and GPIO.input(cfg.buttons.get('candy_only')) == False:
             if lockout_timer == 0:
-                ring_bell("bell1")
+                sound_play(reload)
                 lockout_timer += 1
                 time.sleep(.5)
             elif lockout_timer == 20:
@@ -268,7 +248,8 @@ def sensomatic():
         elif GPIO.input(cfg.buttons.get('candy_only')) == True:
             candy_tube_only = 0
 
-        if GPIO.input(cfg.doors.get('door1')) == False:
+        if GPIO.input(cfg.doors.get('door1')) == True:
+            print ("Door1 Open")
             if water_spray_only == 1:
                 water_count = 0
                 fire_water()
@@ -277,7 +258,7 @@ def sensomatic():
             elif 1 in water:
                 fire_water()
             time.sleep(.3)
-        elif GPIO.input(cfg.doors.get('door2')) == False:
+        elif GPIO.input(cfg.doors.get('door2')) == True:
             if water_spray_only == 1:
                 water_count = 0
                 fire_water()
@@ -286,7 +267,7 @@ def sensomatic():
             elif 2 in water:
                 fire_water()
             time.sleep(.3)
-        elif GPIO.input(cfg.doors.get('door3')) == False:
+        elif GPIO.input(cfg.doors.get('door3')) == True:
             if water_spray_only == 1:
                 water_count = 0
                 fire_water()
@@ -295,7 +276,7 @@ def sensomatic():
             elif 3 in water:
                 fire_water()
             time.sleep(.3)
-        elif GPIO.input(cfg.doors.get('door4')) == False:
+        elif GPIO.input(cfg.doors.get('door4')) == True:
             if water_spray_only == 1:
                 water_count = 0
                 fire_water()
@@ -304,7 +285,7 @@ def sensomatic():
             elif 4 in water:
                 fire_water()
             time.sleep(.3)
-        elif GPIO.input(cfg.doors.get('door5')) == False:
+        elif GPIO.input(cfg.doors.get('door5')) == True:
             if water_spray_only == 1:
                 water_count = 0
                 fire_water()
@@ -313,13 +294,22 @@ def sensomatic():
             elif 5 in water:
                 fire_water()
             time.sleep(.3)
-        elif GPIO.input(cfg.doors.get('door6')) == False:
+        elif GPIO.input(cfg.doors.get('door6')) == True:
             if water_spray_only == 1:
                 water_count = 0
                 fire_water()
             elif candy_tube_only == 1 or 6 in candy:
                 fire_candy()
             elif 6 in water:
+                fire_water()
+            time.sleep(.3)
+        elif GPIO.input(cfg.doors.get('door7')) == True:
+            if water_spray_only == 1:
+                water_count = 0
+                fire_water()
+            elif candy_tube_only == 1 or 7 in candy:
+                fire_candy()
+            elif 7 in water:
                 fire_water()
             time.sleep(.3)
         elif GPIO.input(cfg.buttons.get('reset')) == False:
@@ -361,19 +351,16 @@ def action_server_process(value):
         fire_tube(value)
     elif value in cfg.sprayers:
         spray_water(value)
-    elif value in cfg.bells:
-        ring_bell(value)
     return
 
 if __name__ == "__main__":
+
     global num_tubes
     num_tubes = len(cfg.tubes)
     global num_doors
     num_doors = len(cfg.doors)
     global num_sprayers
     num_sprayers = len(cfg.sprayers)
-    global num_bells
-    num_bells = len(cfg.bells)
     global num_buttons
     num_buttons = len(cfg.buttons)
     global water_spray_only
