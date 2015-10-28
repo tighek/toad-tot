@@ -18,11 +18,14 @@ pins.
 
 
 Future features:
-  - Play a sound effect for each type of door.
   - Web interface for:
     + Handling the functions of the 3 mechanical switches.
     + Provide a live camera feed looking at the person playing.
     + Lock-out to stop all candy and water activities.
+
+Features in v2.1
+  - Sound effects for doors, sprayers, and reload/reset.
+  - Removed "bells".
 
 
 Features in v2.0
