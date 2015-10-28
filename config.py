@@ -14,7 +14,7 @@ ACTION_IP="172.16.10.14"
 ACTION_PORT=30303
 
 SOUND_RESET="sounds/reset.wav"
-SOUND_SUCCESS="sounds/success.wasv"
+SOUND_SUCCESS="sounds/success.wav"
 SOUND_RELOAD="sounds/reload.wav"
 SOUND_FAIL="sounds/fail.wav"
 
