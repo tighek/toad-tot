@@ -26,7 +26,7 @@ Future features:
 Features in v2.1
   - Sound effects for doors, sprayers, and reload/reset.
   - Removed "bells".
-
+  - Added variables in config.py for start-up test fire and delay between tubes.
 
 Features in v2.0
   - Add command line arguments for Local, Sensor, and Action.
