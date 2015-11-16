@@ -18,6 +18,10 @@ SOUND_SUCCESS="sounds/success.wav"
 SOUND_RELOAD="sounds/reload.wav"
 SOUND_FAIL="sounds/fail.wav"
 
+FIRE_ON_STARTUP=0
+TUBE_DELAY=.5
+VALVE_OPEN_TIME=.5
+
 #
 # Define the RPi board channels for the inputs and outputs.
 #

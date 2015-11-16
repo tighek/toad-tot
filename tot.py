@@ -56,7 +56,7 @@ def fire_tube(tb):
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + " Fire Candy %s" % tb)
         GPIO.output(cfg.tubes.get(tb), 0)
-        time.sleep(.5)
+        time.sleep(config.VALVE_OPEN_TIME)
         GPIO.output(cfg.tubes.get(tb), 1)
         sound_play("success")
     elif run_mode == "sensor":
@@ -70,7 +70,7 @@ def spray_water(tb):
     if run_mode == "local" or run_mode == "action":
         print ("Mode: " + run_mode + "Fire Water %s" % tb)
         GPIO.output(cfg.sprayers.get(tb), 0)
-        time.sleep(.5)
+        time.sleep(config.VALVE_OPEN_TIME)
         GPIO.output(cfg.sprayers.get(tb), 1)
         sound_play("fail")
     elif run_mode == "sensor":
@@ -151,7 +151,7 @@ def fire_candy():
     else:
         candy_count = 0
         fire_water()
-    time.sleep(.3)
+    time.sleep(.2)
     return
 
 
@@ -175,7 +175,7 @@ def fire_water():
     else:
         water_count = 0
         fire_candy()
-    time.sleep(.3)
+    time.sleep(.2)
     return
 
 
@@ -207,11 +207,13 @@ def startup():
         print ("Setup Local Mode")
         setup_sensor()
         setup_action()
-        test_action()
+        if cfg.FIRE_ON_STARTUP == 1:
+            test_action()
     elif run_mode == "action":
         print ("Setup Action Mode")
         setup_action()
-        test_action()
+        if cfg.FIRE_ON_STARTUP == 1:
+            test_action()
     elif run_mode == "sensor":
         print ("Setup Sensor Mode")
         setup_sensor()
@@ -257,7 +259,7 @@ def sensomatic():
                 fire_candy()
             elif 1 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.doors.get('door2')) == True:
             if water_spray_only == 1:
                 water_count = 0
@@ -266,7 +268,7 @@ def sensomatic():
                 fire_candy()
             elif 2 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.doors.get('door3')) == True:
             if water_spray_only == 1:
                 water_count = 0
@@ -275,7 +277,7 @@ def sensomatic():
                 fire_candy()
             elif 3 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.doors.get('door4')) == True:
             if water_spray_only == 1:
                 water_count = 0
@@ -284,7 +286,7 @@ def sensomatic():
                 fire_candy()
             elif 4 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.doors.get('door5')) == True:
             if water_spray_only == 1:
                 water_count = 0
@@ -293,7 +295,7 @@ def sensomatic():
                 fire_candy()
             elif 5 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.doors.get('door6')) == True:
             if water_spray_only == 1:
                 water_count = 0
@@ -302,7 +304,7 @@ def sensomatic():
                 fire_candy()
             elif 6 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.doors.get('door7')) == True:
             if water_spray_only == 1:
                 water_count = 0
@@ -311,7 +313,7 @@ def sensomatic():
                 fire_candy()
             elif 7 in water:
                 fire_water()
-            time.sleep(.3)
+            time.sleep(cfg.TUBE_DELAY)
         elif GPIO.input(cfg.buttons.get('reset')) == False:
             reset_counters()
             water, candy = randomize_tubes()
